@@ -13,7 +13,7 @@ require('bootstrap-sass');
 
 /**
  * Vue is a modern JavaScript library for building interactive web interfaces
- * using reactive data binding and reusable components. Vue's API is clean
+ * using reactive data binding and reusable components. Vue's Api is clean
  * and simple, leaving you to focus on building your next great project.
  */
 
@@ -33,7 +33,7 @@ window.axios.defaults.headers.common = {
 };
 
 /**
- * Echo exposes an expressive API for subscribing to channels and listening
+ * Echo exposes an expressive Api for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */

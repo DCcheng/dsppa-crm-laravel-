@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\VarDumper\Tests\Caster;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\VarDumper\Caster\PdoCaster;
 use Symfony\Component\VarDumper\Cloner\Stub;
 use Symfony\Component\VarDumper\Test\VarDumperTestTrait;
@@ -18,7 +19,7 @@ use Symfony\Component\VarDumper\Test\VarDumperTestTrait;
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class PdoCasterTest extends \PHPUnit_Framework_TestCase
+class PdoCasterTest extends TestCase
 {
     use VarDumperTestTrait;
 
@@ -28,9 +29,9 @@ class PdoCasterTest extends \PHPUnit_Framework_TestCase
     public function testCastPdo()
     {
         $pdo = new \PDO('sqlite::memory:');
-        $pdo->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('PDOStatement', array($pdo)));
+        $pdo->setAttribute(\PDO::ATTR_STATEMENT_CLASS, ['PDOStatement', [$pdo]]);
 
-        $cast = PdoCaster::castPdo($pdo, array(), new Stub(), false);
+        $cast = PdoCaster::castPdo($pdo, [], new Stub(), false);
 
         $this->assertInstanceOf('Symfony\Component\VarDumper\Caster\EnumStub', $cast["\0~\0attributes"]);
 

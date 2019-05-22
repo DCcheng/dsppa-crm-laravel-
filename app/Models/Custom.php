@@ -14,4 +14,10 @@ use Illuminate\Database\Eloquent\Model;
 class Custom extends Model
 {
     protected $table = "custom";
+
+//    public static function getTableName()
+//    {
+//        return self::getTable();
+//    }
+
 }
