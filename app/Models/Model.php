@@ -9,10 +9,31 @@
 
 
 namespace App\Models;
+use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 
 class Model extends \Illuminate\Database\Eloquent\Model
 {
+    public static $model;
+
+    public static function init(){
+        self::$model = Container::getInstance()->make(static::class);
+    }
+
+    public static function getTableName(){
+        self::init();
+        return DB::connection()->getTablePrefix().self::$model->getTable();
+    }
+
+    public static function getParams($size = 15)
+    {
+        $page = request()->get("page",1);
+        $size = request()->get("size",$size);
+        $arr = $condition = $params = [];
+        $condition = implode(" and ", $condition);
+        return [$condition, $params, $arr, $page, $size];
+    }
+
 //    public static function addForData(){
 //        DB::table('custom')->insert([
 //            'name' => 'john@example.com',
