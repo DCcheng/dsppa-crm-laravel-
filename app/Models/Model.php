@@ -9,12 +9,15 @@
 
 
 namespace App\Models;
+use App\Api\Utils\Constant;
+use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 
 class Model extends \Illuminate\Database\Eloquent\Model
 {
     public static $model;
+    public $timestamps = false;
 
     public static function init(){
         self::$model = Container::getInstance()->make(static::class);
@@ -25,6 +28,53 @@ class Model extends \Illuminate\Database\Eloquent\Model
         return DB::connection()->getTablePrefix().self::$model->getTable();
     }
 
+    public static function addAttributes($model)
+    {
+        return $model;
+    }
+
+    public static function addForData($data)
+    {
+        $model = new static();
+        try {
+            $model["attributes"] = $data;
+            $model = static::addAttributes($model);
+            $model->save();
+            return $model;
+        }catch (Exception $e){
+            if(config("app.debug")) {
+                throw new Exception($e->getMessage(), $e->getCode());
+            }else {
+                throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE, Constant::SYSTEM_DATA_ACTION_FAIL_CODE);
+            }
+        }
+    }
+
+    public static function editAttributes($model){
+        return $model;
+    }
+
+    public static function updateForData($id, $data)
+    {
+        $model = static::find($id);
+        if ($model) {
+            try {
+                $model["attributes"] = $data;
+                $model = static::editAttributes($model);
+                $model->save();
+                return $model;
+            }catch (Exception $e){
+                if(config("app.debug")) {
+                    throw new Exception($e->getMessage(), $e->getCode());
+                }else {
+                    throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE, Constant::SYSTEM_DATA_ACTION_FAIL_CODE);
+                }
+            }
+        } else {
+            throw new Exception(Constant::SYSTEM_DATA_EXCEPTION_MESSAGE, Constant::SYSTEM_DATA_EXCEPTION_CODE);
+        }
+    }
+
     public static function getParams($size = 15)
     {
         $page = request()->get("page",1);
@@ -33,20 +83,4 @@ class Model extends \Illuminate\Database\Eloquent\Model
         $condition = implode(" and ", $condition);
         return [$condition, $params, $arr, $page, $size];
     }
-
-//    public static function addForData(){
-//        DB::table('custom')->insert([
-//            'name' => 'john@example.com',
-//            'uid' => 0,
-//            "department_id"=>2,
-//            'identify'=>1,
-//            'cid'=>1,
-//            'level'=>1,
-//            'province'=>1,
-//            'city'=>1,
-//            'area'=>1,
-//            'address'=>123123,
-//            'discount'=>"0.9"
-//        ]);
-//    }
 }
