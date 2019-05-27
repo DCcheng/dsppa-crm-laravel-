@@ -18,7 +18,7 @@ class Timestamp
         return date($format, $timestamp);
     }
 
-    public static function toDateAgo($timestamp, $now, $format = "Y-m-d H:i")
+    public static function toDateAgo($timestamp,$now,$format = "Y-m-d H:i")
     {
         $time = (int)$now - (int)$timestamp;
         if($time <= 3540){

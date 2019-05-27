@@ -10,10 +10,28 @@
 
 namespace App\Models;
 use App\Models\Model;
+use Kernel\Maps\Maps;
+use Yii;
 
 class Custom extends Model
 {
     protected $table = "custom";
+
+    public static function addAttributes($model)
+    {
+
+        $model->uid = 1;
+        $model->department_id = 1;
+        $model->in_high_seas = 0;
+        list($model->longitude,$model->latitude) = Maps::getGps($model->address,$model->city);
+        $time = time();
+        $model->cid = (int)$model->cid;
+        $model->discount = (int)$model->discount;
+        $model->follow_up_time = $time;
+        $model->create_time = $time;
+        $model->delete_time = 0;
+        return $model;
+    }
 
     public static function getParams($size = 15)
     {

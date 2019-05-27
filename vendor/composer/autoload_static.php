@@ -78,6 +78,10 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
             'League\\Flysystem\\' => 17,
             'Laravel\\Tinker\\' => 15,
         ),
+        'K' => 
+        array (
+            'Kernel\\' => 7,
+        ),
         'J' => 
         array (
             'JakubOnderka\\PhpConsoleHighlighter\\' => 35,
@@ -230,6 +234,10 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
         array (
             0 => __DIR__ . '/..' . '/laravel/tinker/src',
         ),
+        'Kernel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dccheng/kernel/src/kernel',
+        ),
         'JakubOnderka\\PhpConsoleHighlighter\\' => 
         array (
             0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
@@ -317,6 +325,12 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
     );
 
     public static $classMap = array (
+        'App\\Api\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Api/Controllers/Controller.php',
+        'App\\Api\\Controllers\\V1\\CustomController' => __DIR__ . '/../..' . '/app/Api/Controllers/V1/CustomController.php',
+        'App\\Api\\Utils\\Constant' => __DIR__ . '/../..' . '/app/Api/Utils/Constant.php',
+        'App\\Api\\Utils\\Pager' => __DIR__ . '/../..' . '/app/Api/Utils/Pager.php',
+        'App\\Api\\Utils\\Response' => __DIR__ . '/../..' . '/app/Api/Utils/Response.php',
+        'App\\Api\\Utils\\Timestamp' => __DIR__ . '/../..' . '/app/Api/Utils/Timestamp.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -327,6 +341,7 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Models\\Custom' => __DIR__ . '/../..' . '/app/Models/Custom.php',
+        'App\\Models\\Model' => __DIR__ . '/../..' . '/app/Models/Model.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -1732,6 +1747,33 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/Highlighter.php',
         'JsonSerializable' => __DIR__ . '/..' . '/nesbot/carbon/src/JsonSerializable.php',
+        'Kernel\\Exception\\FException' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/exception/FException.php',
+        'Kernel\\FCurl\\Curl' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/fcurl/Curl.php',
+        'Kernel\\FCurl\\CurlConstant' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/fcurl/CurlConstant.php',
+        'Kernel\\Ftoken\\Token' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/ftoken/Token.php',
+        'Kernel\\Ftoken\\TokenConstant' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/ftoken/TokenConstant.php',
+        'Kernel\\Ftoken\\TokenException' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/ftoken/TokenException.php',
+        'Kernel\\Maps\\Maps' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/maps/Maps.php',
+        'Kernel\\Qrcode\\FrameFiller' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRbitstream' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRcode' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRencode' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRimage' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRinput' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRinputItem' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRmask' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRrawcode' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRrs' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRrsItem' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRrsblock' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRspec' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRsplit' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\QRtools' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Qrcode\\qrstr' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/qrcode/QRcode.php',
+        'Kernel\\Validation\\Validation' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/validation/Validation.php',
+        'Kernel\\acg\\AcgFactory' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/acg/AcgFactory.php',
+        'Kernel\\acg\\AcgYii2' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/acg/AcgYii2.php',
+        'Kernel\\serial\\Serial' => __DIR__ . '/..' . '/dccheng/kernel/src/kernel/serial/Serial.php',
         'Laravel\\Tinker\\ClassAliasAutoloader' => __DIR__ . '/..' . '/laravel/tinker/src/ClassAliasAutoloader.php',
         'Laravel\\Tinker\\Console\\TinkerCommand' => __DIR__ . '/..' . '/laravel/tinker/src/Console/TinkerCommand.php',
         'Laravel\\Tinker\\TinkerCaster' => __DIR__ . '/..' . '/laravel/tinker/src/TinkerCaster.php',
@@ -2381,6 +2423,9 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
         'PhpParser\\JsonDecoder' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/JsonDecoder.php',
         'PhpParser\\Lexer' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer.php',
         'PhpParser\\Lexer\\Emulative' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/Emulative.php',
+        'PhpParser\\Lexer\\TokenEmulator\\CoaleseEqualTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/CoaleseEqualTokenEmulator.php',
+        'PhpParser\\Lexer\\TokenEmulator\\FnTokenEmulator' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/FnTokenEmulator.php',
+        'PhpParser\\Lexer\\TokenEmulator\\TokenEmulatorInterface' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Lexer/TokenEmulator/TokenEmulatorInterface.php',
         'PhpParser\\NameContext' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/NameContext.php',
         'PhpParser\\Node' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node.php',
         'PhpParser\\NodeAbstract' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/NodeAbstract.php',
@@ -2400,6 +2445,7 @@ class ComposerStaticInit7b20e4d61e2f88170fbbc44c70d38a1f
         'PhpParser\\Node\\Expr\\ArrayDimFetch' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/ArrayDimFetch.php',
         'PhpParser\\Node\\Expr\\ArrayItem' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/ArrayItem.php',
         'PhpParser\\Node\\Expr\\Array_' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Array_.php',
+        'PhpParser\\Node\\Expr\\ArrowFunction' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/ArrowFunction.php',
         'PhpParser\\Node\\Expr\\Assign' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/Assign.php',
         'PhpParser\\Node\\Expr\\AssignOp' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/AssignOp.php',
         'PhpParser\\Node\\Expr\\AssignOp\\BitwiseAnd' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Node/Expr/AssignOp/BitwiseAnd.php',
