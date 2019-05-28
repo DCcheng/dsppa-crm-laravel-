@@ -11,14 +11,14 @@
 namespace App\Api\Utils;
 
 
-class Timestamp
+trait Timestamp
 {
-    public static function toDate($timestamp, $format = "Y-m-d H:i")
+    public function toDate($timestamp, $format = "Y-m-d H:i")
     {
         return date($format, $timestamp);
     }
 
-    public static function toDateAgo($timestamp,$now,$format = "Y-m-d H:i")
+    public function toDateAgo($timestamp,$now,$format = "Y-m-d H:i")
     {
         $time = (int)$now - (int)$timestamp;
         if($time <= 3540){

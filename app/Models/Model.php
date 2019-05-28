@@ -9,9 +9,13 @@
 
 
 namespace App\Models;
+
 use App\Api\Utils\Constant;
+use App\Api\Utils\Response;
 use Exception;
 use Illuminate\Container\Container;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class Model extends \Illuminate\Database\Eloquent\Model
@@ -19,13 +23,15 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public static $model;
     public $timestamps = false;
 
-    public static function init(){
+    public static function init()
+    {
         self::$model = Container::getInstance()->make(static::class);
     }
 
-    public static function getTableName(){
+    public static function getTableName()
+    {
         self::init();
-        return DB::connection()->getTablePrefix().self::$model->getTable();
+        return DB::connection()->getTablePrefix() . self::$model->getTable();
     }
 
     public static function addAttributes($model)
@@ -41,16 +47,17 @@ class Model extends \Illuminate\Database\Eloquent\Model
             $model = static::addAttributes($model);
             $model->save();
             return $model;
-        }catch (Exception $e){
-            if(config("app.debug")) {
-                throw new Exception($e->getMessage(), $e->getCode());
-            }else {
-                throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE, Constant::SYSTEM_DATA_ACTION_FAIL_CODE);
+        } catch (Exception $e) {
+            if (config("app.debug")) {
+                throw new HttpResponseException(Response::fail($e->getMessage()));
+            } else {
+                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
             }
         }
     }
 
-    public static function editAttributes($model){
+    public static function editAttributes($model)
+    {
         return $model;
     }
 
@@ -63,22 +70,22 @@ class Model extends \Illuminate\Database\Eloquent\Model
                 $model = static::editAttributes($model);
                 $model->save();
                 return $model;
-            }catch (Exception $e){
-                if(config("app.debug")) {
-                    throw new Exception($e->getMessage(), $e->getCode());
-                }else {
-                    throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE, Constant::SYSTEM_DATA_ACTION_FAIL_CODE);
+            } catch (Exception $e) {
+                if (config("app.debug")) {
+                    throw new HttpResponseException(Response::fail($e->getMessage()));
+                } else {
+                    throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
                 }
             }
         } else {
-            throw new Exception(Constant::SYSTEM_DATA_EXCEPTION_MESSAGE, Constant::SYSTEM_DATA_EXCEPTION_CODE);
+            throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
         }
     }
 
-    public static function getParams($size = 15)
+    public static function getParams(Request $request, $size = 15)
     {
-        $page = request()->get("page",1);
-        $size = request()->get("size",$size);
+        $page = request()->get("page", 1);
+        $size = request()->get("size", $size);
         $arr = $condition = $params = [];
         $condition = implode(" and ", $condition);
         return [$condition, $params, $arr, $page, $size];
