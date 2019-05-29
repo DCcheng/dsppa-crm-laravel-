@@ -9,6 +9,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "dingo/api": "2.0.0-alpha1",
+        "phpoffice/phpspreadsheet": "dev-master",
         "dccheng/kernel": "dev-master"
     },
     "require-dev": {

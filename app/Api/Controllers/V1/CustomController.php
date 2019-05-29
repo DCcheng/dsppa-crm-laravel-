@@ -13,26 +13,44 @@ namespace App\Api\Controllers\V1;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Controllers\Controller;
+use App\Http\Requests\IdsRequest;
+use App\Http\Requests\ListRequest;
+use App\Http\Requests\CustomRequest;
 use App\Models\Custom;
 use App\Models\CustomContacts;
+use App\Models\Department;
+use App\Models\Member;
+use App\Models\Uploads;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Kernel\serial\Serial;
-use App\Http\Requests\CustomRequest;
+
 
 class CustomController extends Controller
 {
-    //1.1 - 获取客户列表
-    public function index(Request $request)
+    /**
+     * 1.1 - 获取客户列表
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(ListRequest $request)
     {
         list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
+        $field = $request->get("field","desc");
+        $order = $request->get("order","id");
+        if(in_array($field,["follow_up_time","create_time","id"]) && in_array($order,["desc","asc"])){
+            $orderRaw = "a.".$field." ".$order;
+        }else{
+            $orderRaw = "a.id desc";
+        }
+
         $time = time();
         $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.*");
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
         list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
-        $list = $model->forPage($page, $size)->orderByRaw("a.id desc")->get();
+        $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
             $value["key"] = $time . "_" . $value["id"];
@@ -44,7 +62,65 @@ class CustomController extends Controller
         return Response::success(["data" => $arr]);
     }
 
-    //1.4 - 添加客户信息
+    /**
+     * 1.2 - 下载客户上传模板
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function download(Request $request)
+    {
+        $filename = "uploads/CustomTemplate.xlsx";
+        return Response::success(["data" => ["filename" => $filename]]);
+    }
+
+    //导入客户信息
+    public function import(Request $request)
+    {
+
+        try {
+//            Uploads::useFile(119);
+//            Uploads::cleanFile();
+//            list($file_id, $filename) = Uploads::uploadFile($request,"file", false);
+//            $tr = Yii::$app->db->beginTransaction();
+//            $row = 2;
+//            try {
+//                $filename = __DIR__ . "/../../" . $filename;
+//                $data = ReadFile::readExcel($filename, "custom");
+//                foreach ($data as $key => $value) {
+//                    $row++;
+//                    $serial = new Serial();
+//                    $value["identify"] = $serial->get();
+//                    $model = Custom::addForData($value);
+//                    CustomContacts::addForData([
+//                        "custom_id" => $model->id,
+//                        "name" => $value["person_name"],
+//                        "phone" => $value["phone"],
+//                        "sex" => $value["sex"],
+//                        "job" => "",
+//                        "is_person_in_charge" => 1
+//                    ]);
+//                    $serial->set($model->identify);
+//                }
+//                $tr->commit();
+//                $result = [1, "导入客户数据成功"];
+//            } catch (Exception $e) {
+//                $msg = $row == 2 ? $e->getMessage() : "第" . $row . "行 - " . $e->getMessage();
+//                $result = [$e->getCode(), $msg];
+//                $tr->rollBack();
+//            }
+//            Uploads::cleanFile("id = $file_id");
+//            list($code, $msg) = $result;
+//            outputJson($code, $msg);
+        } catch (Exception $exception) {
+            return Response::fail($exception->getMessage());
+        }
+    }
+
+    /**
+     * 1.4 - 添加客户信息
+     * @param CustomRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function add(CustomRequest $request)
     {
         $serial = new Serial();
@@ -75,13 +151,17 @@ class CustomController extends Controller
         return Response::success();
     }
 
-    //1.5 - 编辑客户信息
+    /**
+     * 1.5 - 编辑客户信息
+     * @param CustomRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(CustomRequest $request)
     {
         $this->validate($request, [
             'id' => 'required|integer',
             "contacts_id" => "required|array"
-        ],[],["id"=>"客户主键","contacts_id"=>"联系人ID"]);
+        ], [], ["id" => "客户主键", "contacts_id" => "联系人ID"]);
         $contactsData = [
             "contacts_id" => $request->get("contacts_id"),
             "person_name" => $request->get("person_name"),
@@ -117,9 +197,104 @@ class CustomController extends Controller
         return Response::success();
     }
 
-    //1.6 - 废弃客户信息
-    public function delete(Request $request)
+    /**
+     * 1.6 - 废弃客户信息
+     * @param IdsRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(IdsRequest $request)
     {
+        Custom::deleteForIds($request->get("ids"));
+        return Response::success();
+    }
 
+    /**
+     * 1.7 - 把客户投放到公海池
+     * @param IdsRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function putonhighseas(IdsRequest $request)
+    {
+        Custom::updateForIds($request->get("ids"), ["uid" => 0, "in_high_seas" => 1]);
+        return Response::success();
+    }
+
+    /**
+     * 1.8 - 把客户转移到其他销售经理
+     * @param IdsRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function transfer(IdsRequest $request)
+    {
+        $this->validate($request, ['uid' => 'required|integer'], [], ["uid" => "用户ID"]);
+        Custom::updateForIds($request->get("ids"), ["uid" => $request->get("uid")]);
+        return Response::success();
+    }
+
+    /**
+     * 1.9 - 领取客户
+     * @param IdsRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function receive(IdsRequest $request)
+    {
+        Custom::updateForIds($request->get("ids"), ["uid" => $request->get("uid"), "in_high_seas" => 0]);
+        return Response::success();
+    }
+
+    /**
+     * 1.10 - 获取客户统计信息
+     * @param ListRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getcount(ListRequest $request)
+    {
+        list($condition, $params, $arr) = Custom::getCountParams($request);
+        $time = time();
+        $total = 0;
+        $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.uid,b.truename,c.title as department_name,count(a.id) as total")
+            ->join(DB::raw(Member::getTableName() . " as b"), DB::raw("b.uid"), "=", DB::raw("a.uid"))
+            ->join(DB::raw(Department::getTableName() . " as c"), DB::raw("b.department_id"), "=", DB::raw("c.id"))
+            ->groupBy(DB::raw('a.uid,b.truename,c.title'));
+        if ($condition != "") {
+            $model->whereRaw($condition, $params);
+        }
+        $list = $model->get();
+        foreach ($list as $key => $value) {
+            $value = (array)$value;
+            $value["key"] = $time . "_" . $value["uid"];
+            $total += (int)$value["total"];
+            $list[$key] = $value;
+        }
+        $arr['list'] = $list;
+        $arr["total"] = $total;
+        return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 1.11 - 根据当前GPS获取客户列表
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getlistforgps(ListRequest $request)
+    {
+        $this->validate($request, ['longitude' => 'required|numeric', 'latitude' => 'required|numeric'], [], ["longitude" => "经度", "latitude" => "纬度"]);
+        $request->merge(["type" => "list"]);
+        list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
+        $time = time();
+        $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.id,a.identify,a.name,a.address,Round(6378.138 * 2 * ASIN(SQRT(POW(SIN((" . $request->get("latitude") . " * PI() / 180 - latitude * PI() / 180) / 2),2) + COS(" . $request->get("latitude") . " * PI() / 180) * COS(latitude * PI() / 180) * POW(SIN( ( " . $request->get("longitude") . " * PI() / 180 - longitude * PI() / 180 ) / 2 ), 2 ) ) ) * 1000) as `distance`");
+        if ($condition != "") {
+            $model->whereRaw($condition, $params);
+        }
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $list = $model->forPage($page, $size)->orderByRaw("distance asc")->get();
+        foreach ($list as $key => $value) {
+            $value = (array)$value;
+            $value["key"] = $time . "_" . $value["id"];
+            $value["distance"] = $this->toDistanceStr($value["distance"]);
+            $list[$key] = $value;
+        }
+        $arr['list'] = $list;
+        return Response::success(["data" => $arr]);
     }
 }

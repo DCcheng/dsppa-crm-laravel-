@@ -31,7 +31,7 @@ return [
     ],
     'boolean'              => ':attribute必须是Boolean类型',
     'confirmed'            => ':attribute confirmation does not match.',
-    'date'                 => ':attribute is not a valid date.',
+    'date'                 => ':attribute必须是日期格式',
     'date_format'          => ':attribute does not match format :format.',
     'different'            => ':attribute and :other must be different.',
     'digits'               => ':attribute must be :digits digits.',
