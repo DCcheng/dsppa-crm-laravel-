@@ -14,9 +14,10 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Contracts\Validation\Factory;
-
+use App\Api\Utils\ThrowValidates;
 trait ValidatesRequests
 {
+    use ThrowValidates;
     /**
      * The default error bag.
      *
@@ -108,7 +109,7 @@ trait ValidatesRequests
      */
     protected function throwValidationException($validator)
     {
-        throw new HttpResponseException(Response::fail($validator->errors()));
+        throw new HttpResponseException(Response::fail($this->formatError($validator)));
     }
 
     /**

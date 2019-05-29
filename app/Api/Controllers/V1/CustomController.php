@@ -81,7 +81,7 @@ class CustomController extends Controller
         $this->validate($request, [
             'id' => 'required|integer',
             "contacts_id" => "required|array"
-        ]);
+        ],[],["id"=>"客户主键","contacts_id"=>"联系人ID"]);
         $contactsData = [
             "contacts_id" => $request->get("contacts_id"),
             "person_name" => $request->get("person_name"),

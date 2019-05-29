@@ -17,11 +17,7 @@ class Response
         return response()->json($result, 200);
     }
 
-    public static function fail($msg){
-        return response()->json(["message" => $msg,"status_code" => 404], 404);
-    }
-
-    public static function error($msg,$status = 404){
-        return response()->json(["message" => $msg,"status_code" => $status], $status);
+    public static function fail($msg,$code = 404){
+        return response()->json(["message" => $msg,"status_code" => 404], $code);
     }
 }
