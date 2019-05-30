@@ -13,8 +13,8 @@ namespace App\Api\Controllers\V1;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Controllers\Controller;
-use App\Http\Requests\IdsRequest;
-use App\Http\Requests\ListRequest;
+use App\Api\Requests\IdsRequest;
+use App\Api\Requests\ListRequest;
 use App\Models\Custom;
 use Illuminate\Support\Facades\DB;
 

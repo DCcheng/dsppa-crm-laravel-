@@ -11,9 +11,9 @@ namespace App\Api\Controllers\V1;
 
 use App\Api\Controllers\Controller;
 use App\Api\Utils\Response;
-use App\Http\Requests\CustomContactsRequest;
-use App\Http\Requests\IdsRequest;
-use App\Http\Requests\ListRequest;
+use App\Api\Requests\CustomContactsRequest;
+use App\Api\Requests\IdsRequest;
+use App\Api\Requests\ListRequest;
 use App\Models\CustomContacts;
 use Illuminate\Support\Facades\DB;
 
