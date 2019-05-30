@@ -36,6 +36,7 @@ class CustomController extends Controller
      */
     public function index(ListRequest $request)
     {
+        $this->validate($request, ['type' => 'required|string'], [], ["type" => "获取列表类型"]);
         list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
         $field = $request->get("field", "desc");
         $order = $request->get("order", "id");
@@ -111,10 +112,10 @@ class CustomController extends Controller
                 }
                 DB::commit();
                 return Response::success();
-            } catch (HttpResponseException $exception){
+            } catch (HttpResponseException $exception) {
                 DB::rollBack();
                 $msg = $exception->getResponse()->getData()->message;
-                $msg = $row == 2 ?$msg : "第" . $row . "行 - （" .$msg."）";
+                $msg = $row == 2 ? $msg : "第" . $row . "行 - （" . $msg . "）";
                 return Response::fail($msg);
             }
         } catch (Exception $exception) {

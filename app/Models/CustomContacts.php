@@ -27,6 +27,7 @@ class CustomContacts extends Model
         $model->qq = is_null($model->qq) ? "" : $model->qq;
         $model->wechat = is_null($model->wechat) ? "" : $model->wechat;
         $model->job = is_null($model->job) ? "" : $model->job;
+        $model->is_person_in_charge = 0;
         $model->create_time = $time;
         $model->delete_time = 0;
         return $model;
