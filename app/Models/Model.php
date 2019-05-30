@@ -177,6 +177,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     }
 
     /**
+     * 根据PID获取分类列表
      * @param $pid
      * @param bool $is_value
      * @return array
@@ -199,34 +200,55 @@ class Model extends \Illuminate\Database\Eloquent\Model
         return $list;
     }
 
-//    public static function getTreeList($condition, $params, $level, $treeArr,$treeArrForId)
-//    {
-//        $arr = array();
-//        $list = static::find()->where($condition, $params)->orderBy("sort,id asc")->all();
-//        foreach ($list as $key => $value) {
-//            $v = static::setTreeData($value, $level);
-//            $treeArrForId[$v["id"]] = $v;
-//            $treeArr[] = $v;
-//            list($treeArr, $treeArrForId,$childrenList) = static::getTreeList($condition, [":pid" => $v["id"]], $level + 1, $treeArr,$treeArrForId);
-//            $v["children"] = $childrenList;
-//            if (count($v["children"]) == 0) {
-//                $v["children"] = false;
-//            }
-//            $arr[] = $v;
-//        }
-//        return [$treeArr,$treeArrForId,$arr];
-//    }
-//
-//    public static function setTreeData($value, $level)
-//    {
-//        if ($level > 0) {
-//            $treeTitle = str_repeat("  ", $level) . $value->title;
-//        } else {
-//            $treeTitle = $value->title;
-//        }
-//        return ["id" => $value->id, "pid" => $value->pid, "text" => $value->title, "tree_title" => $treeTitle, "level" => $level];
-//    }
+    /**
+     * 获取递归分类列表
+     * @param $condition
+     * @param $params
+     * @param $level
+     * @param $treeArr
+     * @param $treeArrForId
+     * @return array
+     */
+    public static function getTreeList($condition, $params, $level, $treeArr,$treeArrForId)
+    {
+        $arr = array();
+        $list = static::whereRaw($condition, $params)->orderByRaw("sort,id asc")->get();
+        foreach ($list as $key => $value) {
+            $v = static::setTreeData($value, $level);
+            $treeArrForId[$v["id"]] = $v;
+            $treeArr[] = $v;
+            list($treeArr, $treeArrForId,$childrenList) = static::getTreeList($condition, [":pid" => $v["id"]], $level + 1, $treeArr,$treeArrForId);
+            $v["children"] = $childrenList;
+            if (count($v["children"]) == 0) {
+                $v["children"] = false;
+            }
+            $arr[] = $v;
+        }
+        return [$treeArr,$treeArrForId,$arr];
+    }
 
+    /**
+     * 设置递归列表中的数据格式，以及对应的数据字段
+     * @param $value
+     * @param $level
+     * @return array
+     */
+    public static function setTreeData($value, $level)
+    {
+        if ($level > 0) {
+            $treeTitle = str_repeat("  ", $level) . $value->title;
+        } else {
+            $treeTitle = $value->title;
+        }
+        return ["id" => $value->id, "pid" => $value->pid, "text" => $value->title, "tree_title" => $treeTitle, "level" => $level];
+    }
+
+    /**
+     * 获取子分类列表
+     * @param string $condition
+     * @param array $params
+     * @return mixed
+     */
     public static function getChildrenList($condition = "pid = :pid  and status = 1", $params = array())
     {
         $list = DB::table(DB::raw(static::getTableName()))->whereRaw($condition, $params)->orderByRaw("sort,id")->get();

@@ -14,5 +14,6 @@
          "image" => ["gif", "png", "jpg", "jpeg", "bmp"],
          "document" => ["doc", "xls", "ppt", "docx", "xlsx", "pptx", "txt", "pdf"]
      ],
-     '_putOnHighSeasSecond' => '1296000'
+     '_putOnHighSeasSecond' => '1296000',
+     'userInfo'=>[]
  ];

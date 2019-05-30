@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version(['v1', 'v2', 'v3'], function ($api) {
-    $api->group(['prefix' => 'v1'], function () use ($api) {
+    $api->group(['middleware' => ['initApi'],'prefix' => 'v1'], function () use ($api) {
         //1.客户管理模块
         $api->get('customs', 'App\Api\Controllers\V1\CustomController@index');
         $api->get('customs/download', 'App\Api\Controllers\V1\CustomController@download');

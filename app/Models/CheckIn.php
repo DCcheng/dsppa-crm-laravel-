@@ -22,8 +22,9 @@ class CheckIn extends Model
 
     public static function addAttributes($model)
     {
-        $model->uid = 1;//Yii::$app->params["userInfo"]["uid"];
-        $model->department_id = 1;//Yii::$app->params["userInfo"]["department_id"];
+        $userInfo = config("webconfig.userInfo");
+        $model->uid = $userInfo["uid"];
+        $model->department_id = $userInfo["department_id"];
         $model->create_time = time();
         $model->delete_time = 0;
         return $model;
@@ -33,22 +34,23 @@ class CheckIn extends Model
     {
         list(, $params, $arr, $page, $size) = parent::getParams($request, $size);
         $condition = [];
-//        switch (Yii::$app->params["userInfo"]["data_authority"]) {
-//            case "self":
-//                $condition[] = "a.uid = :uid and a.delete_time = 0";
-//                $params[":uid"] = Yii::$app->params["userInfo"]['uid'];
-//                break;
-//            case "department":
-//                $condition[] = "a.department_id = :department_id and a.delete_time = 0";
-//                $params[":department_id"] = Yii::$app->params["userInfo"]['department_id'];
-//                break;
-//            case "all":
-//                $condition[] = "a.delete_time = 0";
-//                break;
-//            default:
-//                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
-//                break;
-//        }
+        $userInfo = config("webconfig.userInfo");
+        switch ($userInfo["data_authority"]) {
+            case "self":
+                $condition[] = "a.uid = :uid and a.delete_time = 0";
+                $params[":uid"] = $userInfo['uid'];
+                break;
+            case "department":
+                $condition[] = "a.department_id = :department_id and a.delete_time = 0";
+                $params[":department_id"] = $userInfo['department_id'];
+                break;
+            case "all":
+                $condition[] = "a.delete_time = 0";
+                break;
+            default:
+                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
+                break;
+        }
 
         $keyword = $request->get("keyword","");
         if ($keyword != "") {

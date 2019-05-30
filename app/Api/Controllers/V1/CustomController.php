@@ -246,7 +246,7 @@ class CustomController extends Controller
      */
     public function receive(IdsRequest $request)
     {
-        Custom::updateForIds($request->get("ids"), ["uid" => $request->get("uid"), "in_high_seas" => 0]);
+        Custom::updateForIds($request->get("ids"), ["uid" =>config("webconfig.userInfo")["uid"], "in_high_seas" => 0]);
         return Response::success();
     }
 

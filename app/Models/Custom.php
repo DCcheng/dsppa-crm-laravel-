@@ -15,7 +15,6 @@ use App\Api\Utils\Response;
 use App\Api\Requests\ListRequest;
 use App\Models\Model;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
 use Kernel\Maps\Maps;
 
 class Custom extends Model
@@ -24,8 +23,9 @@ class Custom extends Model
 
     public static function addAttributes($model)
     {
-        $model->uid = 1;
-        $model->department_id = 1;
+        $userInfo = config("webconfig.userInfo");
+        $model->uid = $userInfo["uid"];
+        $model->department_id = $userInfo["department_id"];
         $model->in_high_seas = 0;
         list($model->longitude, $model->latitude) = Maps::getGps($model->address, $model->city);
         $time = time();
@@ -46,36 +46,37 @@ class Custom extends Model
         //其中包含了客户列表、公海池、回收站
         //在客户列表中也根据访问用户的数据权限分为了，自己、部门和所有
         $type = $request->get('type', "");
-//        switch ($type) {
-//            case "list":
-//                switch (Yii::$app->params["userInfo"]["data_authority"]) {
-//                    case "self":
-//                        $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
-//                        $params[":uid"] = Yii::$app->params["userInfo"]['uid'];
-//                        break;
-//                    case "department":
-//                        $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
-//                        $params[":department_id"] = Yii::$app->params["userInfo"]['department_id'];
-//                        break;
-//                    case "all":
-//                        $condition[] = "a.in_high_seas = 0 and a.delete_time = 0";
-//                        break;
-//                    default:
-//                        throw new Exception(Constant::SYSTEM_DATA_EXCEPTION_MESSAGE, Constant::SYSTEM_DATA_EXCEPTION_CODE);
-//                        break;
-//                }
-//                break;
-//            case "high_seas":
-//                $condition[] = "a.department_id = :department_id and a.in_high_seas = 1 and a.delete_time = 0";
-//                $params[":department_id"] = Yii::$app->params["userInfo"]['department_id'];
-//                break;
-//            case "trash":
-//                $condition[] = "a.in_high_seas = 1 and a.delete_time > 0";
-//                break;
-//            default:
-//                throw new Exception(Constant::SYSTEM_DATA_EXCEPTION_MESSAGE, Constant::SYSTEM_DATA_EXCEPTION_CODE);
-//                break;
-//        }
+        $userInfo = config("webconfig.userInfo");
+        switch ($type) {
+            case "list":
+                switch ($userInfo["data_authority"]) {
+                    case "self":
+                        $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
+                        $params[":uid"] = $userInfo['uid'];
+                        break;
+                    case "department":
+                        $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
+                        $params[":department_id"] = $userInfo['department_id'];
+                        break;
+                    case "all":
+                        $condition[] = "a.in_high_seas = 0 and a.delete_time = 0";
+                        break;
+                    default:
+                        throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
+                        break;
+                }
+                break;
+            case "high_seas":
+                $condition[] = "a.department_id = :department_id and a.in_high_seas = 1 and a.delete_time = 0";
+                $params[":department_id"] = $userInfo['department_id'];
+                break;
+            case "trash":
+                $condition[] = "a.in_high_seas = 1 and a.delete_time > 0";
+                break;
+            default:
+                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
+                break;
+        }
 
         //获取公司名以及编号中包含对应关键字的客户档案
         $keyword = $request->get('keyword', "");
@@ -145,22 +146,23 @@ class Custom extends Model
 
         //根据列表类型返回对应的数据
         //在客户列表中也根据访问用户的数据权限分为了，自己、部门和所有
-//        switch (Yii::$app->params["userInfo"]["data_authority"]) {
-//            case "self":
-//                $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
-//                $params[":uid"] = Yii::$app->params["userInfo"]['uid'];
-//                break;
-//            case "department":
-//                $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
-//                $params[":department_id"] = Yii::$app->params["userInfo"]['department_id'];
-//                break;
-//            case "all":
-//                $condition[] = " a.in_high_seas = 0 and a.delete_time = 0";
-//                break;
-//            default:
-//                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE ." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
-//                break;
-//        }
+        $userInfo = config("webconfig.userInfo");
+        switch ($userInfo["data_authority"]) {
+            case "self":
+                $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
+                $params[":uid"] = $userInfo['uid'];
+                break;
+            case "department":
+                $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
+                $params[":department_id"] = $userInfo['department_id'];
+                break;
+            case "all":
+                $condition[] = " a.in_high_seas = 0 and a.delete_time = 0";
+                break;
+            default:
+                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE ." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
+                break;
+        }
 
         //获取公司名以及编号中包含对应关键字的客户档案
         $keyword = $request->get('keyword', "");
