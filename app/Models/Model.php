@@ -152,13 +152,13 @@ class Model extends \Illuminate\Database\Eloquent\Model
     }
 
     /**
-     * 根据条件删除数据，如果需要软删除则需要继承本类把该方法重写
+     * 根据条件软删除数据，如果需要硬删除则需要继承本类把该方法重写
      * @param $condition
      * @throws Exception
      */
     public static function deleteDataForIds($condition)
     {
-        static::whereRaw($condition)->delete();
+        static::whereRaw($condition)->update(["delete_time" => time()]);
     }
 
     /**

@@ -27,7 +27,6 @@ use Illuminate\Http\Request;
 use Kernel\serial\Serial;
 use Exception;
 
-
 class CustomController extends Controller
 {
     /**
