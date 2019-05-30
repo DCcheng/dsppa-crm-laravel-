@@ -12,7 +12,7 @@ namespace App\Models;
 
 use App\Api\Utils\Constant;
 use App\Api\Utils\Response;
-use App\Http\Requests\ListRequest;
+use App\Api\Requests\ListRequest;
 use App\Models\Category;
 use Exception;
 use Illuminate\Container\Container;

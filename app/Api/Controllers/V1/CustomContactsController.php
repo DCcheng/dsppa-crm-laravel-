@@ -48,7 +48,8 @@ class CustomContactsController extends Controller
      * @param CustomContactsRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function add(CustomContactsRequest $request){
+    public function add(CustomContactsRequest $request)
+    {
         CustomContacts::addForData($request->all());
         return Response::success();
     }
@@ -58,9 +59,10 @@ class CustomContactsController extends Controller
      * @param CustomContactsRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CustomContactsRequest $request){
+    public function update(CustomContactsRequest $request)
+    {
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "联系人ID"]);
-        CustomContacts::updateForData($request->get("id"),$request->all());
+        CustomContacts::updateForData($request->get("id"), $request->all());
         return Response::success();
     }
 

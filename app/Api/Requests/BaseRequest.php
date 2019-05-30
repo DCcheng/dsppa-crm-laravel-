@@ -8,7 +8,7 @@
  */
 
 
-namespace App\Http\Requests;
+namespace App\Api\Requests;
 
 use App\Api\Utils\Response;
 use Illuminate\Foundation\Http\FormRequest;

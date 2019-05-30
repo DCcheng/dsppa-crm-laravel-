@@ -10,7 +10,7 @@
 
 namespace App\Models;
 
-use App\Http\Requests\ListRequest;
+use App\Api\Requests\ListRequest;
 use App\Models\Model;
 use App\Api\Utils\Constant;
 use App\Api\Utils\Response;

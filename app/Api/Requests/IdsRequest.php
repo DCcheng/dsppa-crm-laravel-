@@ -7,8 +7,8 @@
  */
 
 
-namespace App\Http\Requests;
-use App\Http\Requests\BaseRequest;
+namespace App\Api\Requests;
+use App\Api\Requests\BaseRequest;
 
 class IdsRequest extends BaseRequest
 {

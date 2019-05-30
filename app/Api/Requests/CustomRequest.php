@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Api\Requests;
 
-use App\Http\Requests\BaseRequest;
+use App\Api\Requests\BaseRequest;
 
 class CustomRequest extends BaseRequest
 {
