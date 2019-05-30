@@ -187,10 +187,12 @@ class Model extends \Illuminate\Database\Eloquent\Model
         $categoryList = Category::getChildrenList("pid = :pid  and status = 1 and id > 100 and delete_time = 0", [":pid" => $pid]);
         if($is_value) {
             foreach ($categoryList as $key => $value) {
+                $value = (array)$value;
                 $list[] = array("text" => $value["title"], "value" => $value["value"], "tree_title" => $value["title"], "content" => $value["title"]);
             }
         }else{
             foreach ($categoryList as $key => $value) {
+                $value = (array)$value;
                 $list[] = array("text" => $value["title"], "value" => $value["id"], "tree_title" => $value["title"], "content" => $value["title"]);
             }
         }
@@ -227,7 +229,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
     public static function getChildrenList($condition = "pid = :pid  and status = 1", $params = array())
     {
-        $list = DB::table(static::getTableName())->whereRaw($condition, $params)->orderByRaw("sort,id")->get();
+        $list = DB::table(DB::raw(static::getTableName()))->whereRaw($condition, $params)->orderByRaw("sort,id")->get();
         return $list;
     }
 }

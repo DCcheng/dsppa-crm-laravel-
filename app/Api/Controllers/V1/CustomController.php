@@ -7,7 +7,6 @@
  *  Time: 15:27
  */
 
-
 namespace App\Api\Controllers\V1;
 
 use App\Api\Utils\Pager;
@@ -21,9 +20,12 @@ use App\Models\CustomContacts;
 use App\Models\Department;
 use App\Models\Member;
 use App\Models\Uploads;
+use App\Api\Utils\ReadFile;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Kernel\serial\Serial;
+use Exception;
 
 
 class CustomController extends Controller
@@ -36,11 +38,11 @@ class CustomController extends Controller
     public function index(ListRequest $request)
     {
         list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
-        $field = $request->get("field","desc");
-        $order = $request->get("order","id");
-        if(in_array($field,["follow_up_time","create_time","id"]) && in_array($order,["desc","asc"])){
-            $orderRaw = "a.".$field." ".$order;
-        }else{
+        $field = $request->get("field", "desc");
+        $order = $request->get("order", "id");
+        if (in_array($field, ["follow_up_time", "create_time", "id"]) && in_array($order, ["desc", "asc"])) {
+            $orderRaw = "a." . $field . " " . $order;
+        } else {
             $orderRaw = "a.id desc";
         }
 
@@ -72,44 +74,50 @@ class CustomController extends Controller
         return Response::success(["data" => ["filename" => $filename]]);
     }
 
-    //导入客户信息
+    /**
+     * 1.3 - 导入客户信息
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function import(Request $request)
     {
-
         try {
-//            Uploads::useFile(119);
-//            Uploads::cleanFile();
-//            list($file_id, $filename) = Uploads::uploadFile($request,"file", false);
-//            $tr = Yii::$app->db->beginTransaction();
-//            $row = 2;
-//            try {
-//                $filename = __DIR__ . "/../../" . $filename;
-//                $data = ReadFile::readExcel($filename, "custom");
-//                foreach ($data as $key => $value) {
-//                    $row++;
-//                    $serial = new Serial();
-//                    $value["identify"] = $serial->get();
-//                    $model = Custom::addForData($value);
-//                    CustomContacts::addForData([
-//                        "custom_id" => $model->id,
-//                        "name" => $value["person_name"],
-//                        "phone" => $value["phone"],
-//                        "sex" => $value["sex"],
-//                        "job" => "",
-//                        "is_person_in_charge" => 1
-//                    ]);
-//                    $serial->set($model->identify);
-//                }
-//                $tr->commit();
-//                $result = [1, "导入客户数据成功"];
-//            } catch (Exception $e) {
-//                $msg = $row == 2 ? $e->getMessage() : "第" . $row . "行 - " . $e->getMessage();
-//                $result = [$e->getCode(), $msg];
-//                $tr->rollBack();
-//            }
-//            Uploads::cleanFile("id = $file_id");
-//            list($code, $msg) = $result;
-//            outputJson($code, $msg);
+            $this->validate($request, ['file' => 'required|file'], [], ["file" => "上传文件"]);
+            list($file_id, $filename) = Uploads::uploadFile($request, "file", false);
+            $row = 2;
+            $data = ReadFile::readExcel(storage_path('app') . "/" . $filename, "custom");
+            Uploads::cleanFile("id = $file_id");
+            DB::beginTransaction();
+            try {
+                foreach ($data as $key => $value) {
+                    $row++;
+                    $serial = new Serial();
+                    $contactsData = [
+                        "person_name" => $value["person_name"],
+                        "phone" => $value["phone"],
+                        "sex" => $value["sex"]
+                    ];
+                    $data = array_diff_key($value, $contactsData);
+                    $data["identify"] = $serial->get();
+                    $model = Custom::addForData($data);
+                    CustomContacts::addForData([
+                        "custom_id" => $model->id,
+                        "name" => $contactsData["person_name"],
+                        "phone" => $contactsData["phone"],
+                        "sex" => $contactsData["sex"],
+                        "job" => "",
+                        "is_person_in_charge" => 1
+                    ]);
+                    $serial->set($model->identify);
+                }
+                DB::commit();
+                return Response::success();
+            } catch (HttpResponseException $exception){
+                DB::rollBack();
+                $msg = $exception->getResponse()->getData()->message;
+                $msg = $row == 2 ?$msg : "第" . $row . "行 - （" .$msg."）";
+                return Response::fail($msg);
+            }
         } catch (Exception $exception) {
             return Response::fail($exception->getMessage());
         }

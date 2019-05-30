@@ -33,11 +33,11 @@ class ReadFile
         switch ($type){
             case "custom":
                 $f = "readCustomInfo";
-                $template = __DIR__ . "/../../uploads/CustomTemplate.xlsx";
+                $template = storage_path('app') . "/uploads/CustomTemplate.xlsx";
                 break;
             case "scheme-list":
                 $f = "readSchemeListInfo";
-                $template = __DIR__ . "/../../uploads/CustomSchemeListTemplate.xlsx";
+                $template = storage_path('app') . "/uploads/CustomSchemeListTemplate.xlsx";
                 break;
             default:
                 throw new Exception(self::ErrorTypeMessage);
