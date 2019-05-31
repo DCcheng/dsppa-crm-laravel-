@@ -106,7 +106,7 @@ class ReadFile
                 if($arr["product_name"] == ""){
                     break;
                 }
-                $arr["intention"] = (string)$worksheet->getCell("B" . $row)->getValue();
+                $arr["brand"] = (string)$worksheet->getCell("B" . $row)->getValue();
                 $arr["product_model"] = (string)$worksheet->getCell("C" . $row)->getValue();
                 $arr["price"] = (string)$worksheet->getCell("D" . $row)->getValue();
                 $arr["quantity"] = (string)$worksheet->getCell("E" . $row)->getValue();

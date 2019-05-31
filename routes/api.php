@@ -34,6 +34,13 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('scheme/add', 'App\Api\Controllers\V1\CustomSchemeController@add');
         $api->post('scheme/update', 'App\Api\Controllers\V1\CustomSchemeController@update');
         $api->post('scheme/delete', 'App\Api\Controllers\V1\CustomSchemeController@delete');
+        $api->get('schemelist', 'App\Api\Controllers\V1\CustomSchemeListController@index');
+        $api->get('schemelist/download', 'App\Api\Controllers\V1\CustomSchemeListController@download');
+        $api->post('schemelist/import', 'App\Api\Controllers\V1\CustomSchemeListController@import');
+        $api->post('schemelist/add', 'App\Api\Controllers\V1\CustomSchemeListController@add');
+        $api->post('schemelist/update', 'App\Api\Controllers\V1\CustomSchemeListController@update');
+        $api->post('schemelist/delete', 'App\Api\Controllers\V1\CustomSchemeListController@delete');
+
 
         //4.客户联系人模块
         $api->get('contacts', 'App\Api\Controllers\V1\CustomContactsController@index');
