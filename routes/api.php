@@ -29,6 +29,12 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->get('customs/getcount', 'App\Api\Controllers\V1\CustomController@getcount');
         $api->get('customs/getlistforgps', 'App\Api\Controllers\V1\CustomController@getlistforgps');
 
+        //2.客户方案卡
+        $api->get('scheme', 'App\Api\Controllers\V1\CustomSchemeController@index');
+        $api->post('scheme/add', 'App\Api\Controllers\V1\CustomSchemeController@add');
+        $api->post('scheme/update', 'App\Api\Controllers\V1\CustomSchemeController@update');
+        $api->post('scheme/delete', 'App\Api\Controllers\V1\CustomSchemeController@delete');
+
         //4.客户联系人模块
         $api->get('contacts', 'App\Api\Controllers\V1\CustomContactsController@index');
         $api->post('contacts/add', 'App\Api\Controllers\V1\CustomContactsController@add');

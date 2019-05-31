@@ -14,10 +14,13 @@ class Response
 {
     public static function success($arr = []){
         $result = array_merge(["message" => "OK","status_code"=>200], $arr);
+        Log::update(200,$result);
         return response()->json($result, 200);
     }
 
     public static function fail($msg,$code = 404){
-        return response()->json(["message" => $msg,"status_code" => 404], $code);
+        $result = ["message" => $msg,"status_code" => 404];
+        Log::update($code,$result);
+        return response()->json($result, $code);
     }
 }

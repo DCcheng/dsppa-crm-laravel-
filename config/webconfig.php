@@ -15,5 +15,6 @@
          "document" => ["doc", "xls", "ppt", "docx", "xlsx", "pptx", "txt", "pdf"]
      ],
      '_putOnHighSeasSecond' => '1296000',
-     'userInfo'=>[]
+     'userInfo'=>[],
+     'logID'=>0
  ];

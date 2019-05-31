@@ -10,29 +10,29 @@
 
 namespace App\Api\Controllers\V1;
 
+use App\Api\Requests\CustomSchemeRequest;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Controllers\Controller;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
-use App\Models\Custom;
+use App\Models\CustomScheme;
 use Illuminate\Support\Facades\DB;
 
 class CustomSchemeController extends Controller
 {
+    /**
+     * 2.1 - 获取客户方案卡列表
+     * @param ListRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
-        $field = $request->get("field", "desc");
-        $order = $request->get("order", "id");
-        if (in_array($field, ["follow_up_time", "create_time", "id"]) && in_array($order, ["desc", "asc"])) {
-            $orderRaw = "a." . $field . " " . $order;
-        } else {
-            $orderRaw = "a.id desc";
-        }
-
+        $this->validate($request, ["custom_id" => "required|integer"], [], ["custom_id" => "客户ID"]);
+        list($condition, $params, $arr, $page, $size) = CustomScheme::getParams($request);
+        $orderRaw = "a.id desc";
         $time = time();
-        $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.*");
+        $model = DB::table(DB::raw(CustomScheme::getTableName() . " as a"))->selectRaw("a.*");
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
@@ -41,11 +41,43 @@ class CustomSchemeController extends Controller
         foreach ($list as $key => $value) {
             $value = (array)$value;
             $value["key"] = $time . "_" . $value["id"];
-            $value["follow_up_time"] = $this->toDateAgo($value['follow_up_time'], $time);
+            $value["cname"] = "";
+            $value["action_time"] = $this->toDate($value['action_time']);
             $value["create_time"] = $this->toDate($value["create_time"]);
             $list[$key] = $value;
         }
         $arr['list'] = $list;
         return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 2.2 - 新增客户方案卡
+     * @param CustomSchemeRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function add(CustomSchemeRequest $request){
+        CustomScheme::addForData($request->all());
+        return Response::success();
+    }
+
+    /**
+     * 2.3 - 修改客户方案卡
+     * @param CustomSchemeRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(CustomSchemeRequest $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "方案卡ID"]);
+        CustomScheme::updateForData($request->get("id"),$request->all());
+        return Response::success();
+    }
+
+    /**
+     * 2.4 - 删除客户方案卡
+     * @param IdsRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(IdsRequest $request){
+        CustomScheme::deleteForIds($request->get("ids"));
+        return Response::success();
     }
 }
