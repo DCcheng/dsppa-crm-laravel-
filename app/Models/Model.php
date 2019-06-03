@@ -19,9 +19,11 @@ use Illuminate\Container\Container;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Api\Utils\ArrayColumn;
 
 class Model extends \Illuminate\Database\Eloquent\Model
 {
+    use ArrayColumn;
     public static $model;
     public $timestamps = false;
 
@@ -121,13 +123,15 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public static function updateForIds($ids, $updateData = [], $field = "id")
     {
         $ids = is_array($ids) ? implode(",", $ids) : $ids;
-        try {
-            static::whereRaw( $field . " in (" . $ids . ")")->update($updateData);
-        } catch (Exception $e) {
-            if (config("app.debug")) {
-                throw new HttpResponseException(Response::fail($e->getMessage()));
-            } else {
-                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
+        if($ids != "") {
+            try {
+                static::whereRaw($field . " in (" . $ids . ")")->update($updateData);
+            } catch (Exception $e) {
+                if (config("app.debug")) {
+                    throw new HttpResponseException(Response::fail($e->getMessage()));
+                } else {
+                    throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
+                }
             }
         }
     }
@@ -140,13 +144,15 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public static function deleteForIds($ids, $field = "id")
     {
         $ids = is_array($ids) ? implode(",", $ids) : $ids;
-        try {
-            static::deleteDataForIds($field . " in (" . $ids . ")");
-        } catch (Exception $e) {
-            if (config("app.debug")) {
-                throw new HttpResponseException(Response::fail($e->getMessage()));
-            } else {
-                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
+        if($ids != "") {
+            try {
+                static::deleteDataForIds($field . " in (" . $ids . ")");
+            } catch (Exception $e) {
+                if (config("app.debug")) {
+                    throw new HttpResponseException(Response::fail($e->getMessage()));
+                } else {
+                    throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE));
+                }
             }
         }
     }

@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version(['v1', 'v2', 'v3'], function ($api) {
+    $api->group(['prefix' => 'v1'], function () use ($api) {
+        $api->post("public/login", 'App\Api\Controllers\V1\PublicController@login');
+    });
     $api->group(['middleware' => ['initApi'],'prefix' => 'v1'], function () use ($api) {
         //1.客户管理模块
         $api->get('customs', 'App\Api\Controllers\V1\CustomController@index');
@@ -41,6 +44,12 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('schemelist/update', 'App\Api\Controllers\V1\CustomSchemeListController@update');
         $api->post('schemelist/delete', 'App\Api\Controllers\V1\CustomSchemeListController@delete');
 
+        //3.客户根据
+        $api->get('followup', 'App\Api\Controllers\V1\CustomFollowUpController@index');
+        $api->get('followup/files', 'App\Api\Controllers\V1\CustomFollowUpController@files');
+        $api->post('followup/add', 'App\Api\Controllers\V1\CustomFollowUpController@add');
+        $api->post('followup/update', 'App\Api\Controllers\V1\CustomFollowUpController@update');
+        $api->post('followup/delete', 'App\Api\Controllers\V1\CustomFollowUpController@delete');
 
         //4.客户联系人模块
         $api->get('contacts', 'App\Api\Controllers\V1\CustomContactsController@index');
@@ -54,6 +63,13 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('checkin/update', 'App\Api\Controllers\V1\CheckInController@update');
         $api->post('checkin/delete', 'App\Api\Controllers\V1\CheckInController@delete');
         $api->get('checkin/export', 'App\Api\Controllers\V1\CheckInController@export');
+
+        //13.用户接口
+        $api->get("public/logout", 'App\Api\Controllers\V1\PublicController@logout');
+
+        //14.文件管理
+        $api->post("public/uploadfile", 'App\Api\Controllers\V1\PublicController@uploadfile');
+        $api->get("public/cleanfile", 'App\Api\Controllers\V1\PublicController@cleanfile');
     });
 
     $api->group(['prefix' => 'v3'], function () use ($api) {

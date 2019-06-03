@@ -141,7 +141,8 @@ class CustomController extends Controller
         ];
         $data = array_diff_key($request->all(), $contactsData);
         $data["identify"] = $serial->get();
-        $model = DB::transaction(function () use ($data, $contactsData) {
+        DB::beginTransaction();
+        try {
             $model = Custom::addForData($data);
             foreach ($contactsData["person_name"] as $key => $value) {
                 CustomContacts::addForData([
@@ -153,10 +154,13 @@ class CustomController extends Controller
                     "is_person_in_charge" => $contactsData["charge_status"][$key]
                 ]);
             }
-            return $model;
-        });
-        $serial->set($model->identify);
-        return Response::success();
+            $serial->set($model->identify);
+            DB::commit();
+            return Response::success();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return Response::fail($exception->getMessage());
+        }
     }
 
     /**
@@ -166,10 +170,7 @@ class CustomController extends Controller
      */
     public function update(CustomRequest $request)
     {
-        $this->validate($request, [
-            'id' => 'required|integer',
-            "contacts_id" => "required|array"
-        ], [], ["id" => "客户主键", "contacts_id" => "联系人ID"]);
+        $this->validate($request, ['id' => 'required|integer', "contacts_id" => "required|array"], [], ["id" => "客户主键", "contacts_id" => "联系人ID"]);
         $contactsData = [
             "contacts_id" => $request->get("contacts_id"),
             "person_name" => $request->get("person_name"),
@@ -179,7 +180,8 @@ class CustomController extends Controller
             "charge_status" => $request->get("charge_status")
         ];
         $data = array_diff_key($request->all(), $contactsData);
-        DB::transaction(function () use ($data, $contactsData) {
+        DB::beginTransaction();
+        try {
             $model = Custom::updateForData($data["id"], $data);
             foreach ($_POST["contacts_id"] as $key => $value) {
                 if ($value == 0) {
@@ -201,8 +203,12 @@ class CustomController extends Controller
                     ]);
                 }
             }
-        });
-        return Response::success();
+            DB::commit();
+            return Response::success();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return Response::fail($exception->getMessage());
+        }
     }
 
     /**
@@ -246,7 +252,7 @@ class CustomController extends Controller
      */
     public function receive(IdsRequest $request)
     {
-        Custom::updateForIds($request->get("ids"), ["uid" =>config("webconfig.userInfo")["uid"], "in_high_seas" => 0]);
+        Custom::updateForIds($request->get("ids"), ["uid" => config("webconfig.userInfo")["uid"], "in_high_seas" => 0]);
         return Response::success();
     }
 
