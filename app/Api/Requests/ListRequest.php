@@ -17,6 +17,7 @@ class ListRequest extends BaseRequest
     public function rules()
     {
         return [
+            'type'=>'string',
             'scheme_id'=>'integer',
             'custom_id'=>'integer',
             'contacts_name' => 'string',
@@ -36,6 +37,7 @@ class ListRequest extends BaseRequest
     public function attributes()
     {
         return [
+            'type'=>'类型',
             'scheme_id'=>'方案卡ID',
             'custom_id'=>'客户ID',
             'contacts_name' => "联系人姓名",

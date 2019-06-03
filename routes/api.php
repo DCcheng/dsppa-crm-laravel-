@@ -64,6 +64,21 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('checkin/delete', 'App\Api\Controllers\V1\CheckInController@delete');
         $api->get('checkin/export', 'App\Api\Controllers\V1\CheckInController@export');
 
+        //7.1 - 获取分类列表
+        $api->get('category', 'App\Api\Controllers\V1\CategoryController@index');
+        $api->get('category/all', 'App\Api\Controllers\V1\CategoryController@all');
+        $api->post('category/add', 'App\Api\Controllers\V1\CategoryController@add');
+        $api->post('category/update', 'App\Api\Controllers\V1\CategoryController@update');
+        $api->post('category/delete', 'App\Api\Controllers\V1\CategoryController@delete');
+        $api->get('category/tree', 'App\Api\Controllers\V1\CategoryController@tree');
+
+        //9.功能访问节点接口
+        $api->get('access', 'App\Api\Controllers\V1\AccessController@index');
+        $api->post('access/add', 'App\Api\Controllers\V1\AccessController@add');
+        $api->post('access/update', 'App\Api\Controllers\V1\AccessController@update');
+        $api->post('access/delete', 'App\Api\Controllers\V1\AccessController@delete');
+        $api->get('access/tree', 'App\Api\Controllers\V1\AccessController@tree');
+
         //13.用户接口
         $api->get("public/logout", 'App\Api\Controllers\V1\PublicController@logout');
 
