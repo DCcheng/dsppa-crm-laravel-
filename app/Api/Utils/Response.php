@@ -19,7 +19,7 @@ class Response
     }
 
     public static function fail($msg,$code = 404){
-        $result = ["message" => $msg,"status_code" => 404];
+        $result = ["message" => $msg,"status_code" => $code];
         Log::update($code,$result);
         return response()->json($result, $code);
     }

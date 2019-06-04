@@ -64,13 +64,19 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('checkin/delete', 'App\Api\Controllers\V1\CheckInController@delete');
         $api->get('checkin/export', 'App\Api\Controllers\V1\CheckInController@export');
 
-        //7.1 - 获取分类列表
+        //7.分类接口
         $api->get('category', 'App\Api\Controllers\V1\CategoryController@index');
         $api->get('category/all', 'App\Api\Controllers\V1\CategoryController@all');
         $api->post('category/add', 'App\Api\Controllers\V1\CategoryController@add');
         $api->post('category/update', 'App\Api\Controllers\V1\CategoryController@update');
         $api->post('category/delete', 'App\Api\Controllers\V1\CategoryController@delete');
         $api->get('category/tree', 'App\Api\Controllers\V1\CategoryController@tree');
+
+        //8.日志接口
+        $api->get('log', 'App\Api\Controllers\V1\LogController@index');
+        $api->post('log/add', 'App\Api\Controllers\V1\LogController@add');
+        $api->post('log/update', 'App\Api\Controllers\V1\LogController@update');
+        $api->post('log/delete', 'App\Api\Controllers\V1\LogController@delete');
 
         //9.功能访问节点接口
         $api->get('access', 'App\Api\Controllers\V1\AccessController@index');
