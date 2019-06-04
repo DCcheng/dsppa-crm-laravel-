@@ -51,12 +51,12 @@ class Custom extends Model
             case "list":
                 switch ($userInfo["data_authority"]) {
                     case "self":
-                        $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
-                        $params[":uid"] = $userInfo['uid'];
+                        $condition[] = "a.uid = ? and a.in_high_seas = 0 and a.delete_time = 0";
+                        $params[] = $userInfo['uid'];
                         break;
                     case "department":
-                        $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
-                        $params[":department_id"] = $userInfo['department_id'];
+                        $condition[] = "a.department_id = ? and a.in_high_seas = 0 and a.delete_time = 0";
+                        $params[] = $userInfo['department_id'];
                         break;
                     case "all":
                         $condition[] = "a.in_high_seas = 0 and a.delete_time = 0";
@@ -67,8 +67,8 @@ class Custom extends Model
                 }
                 break;
             case "high_seas":
-                $condition[] = "a.department_id = :department_id and a.in_high_seas = 1 and a.delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "a.department_id = ? and a.in_high_seas = 1 and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "trash":
                 $condition[] = "a.in_high_seas = 1 and a.delete_time > 0";
@@ -81,58 +81,58 @@ class Custom extends Model
         //获取公司名以及编号中包含对应关键字的客户档案
         $keyword = $request->get('keyword', "");
         if ($keyword != "") {
-            $condition[] = "(a.name like :name or a.identify like :identify)";
-            $params[':name'] = trim($keyword) . "%";
-            $params[':identify'] = trim($keyword) . "%";
+            $condition[] = "(a.name like ? or a.identify like ?)";
+            $params[] = trim($keyword) . "%";
+            $params[] = trim($keyword) . "%";
         }
 
         //获取公司名以及编号中包含对应关键字的客户档案
         $contacts_name = $request->get('contacts_name', "");
         if ($contacts_name != "") {
-            $condition[] = "(b.name like :contacts_name)";
-            $params[':contacts_name'] = "%" . trim($contacts_name) . "%";
+            $condition[] = "(b.name like ?)";
+            $params[] = "%" . trim($contacts_name) . "%";
         }
 
         //获取对应省份的客户档案
         $province = $request->get('province', "");
         if ($province != "") {
-            $condition[] = "a.province = :province";
-            $params[':province'] = trim($province);
+            $condition[] = "a.province = ?";
+            $params[] = trim($province);
         }
 
         //获取对应城市的客户档案
         $city = $request->get('city', "");
         if ($city != "") {
-            $condition[] = "a.city = :city";
-            $params[':city'] = trim($city);
+            $condition[] = "a.city = ?";
+            $params[] = trim($city);
         }
 
         //获取对应区/县的客户档案
         $area = $request->get('area', "");
         if ($area != "") {
-            $condition[] = "a.area = :area";
-            $params[':area'] = trim($area);
+            $condition[] = "a.area = ?";
+            $params[] = trim($area);
         }
 
         //获取什么时间段后建立的客户档案
         $start_time = $request->get('start_time', "");
         if ($start_time != "") {
-            $params[':start_time'] = strtotime($start_time);
-            $condition[] = "a.create_time >= :start_time";
+            $params[] = strtotime($start_time);
+            $condition[] = "a.create_time >= ?";
         }
 
         //获取什么时间段前建立的客户档案
         $end_time = $request->get('end_time', "");
         if ($end_time != "") {
-            $params[':end_time'] = strtotime($end_time);
-            $condition[] = "a.create_time <= :end_time";
+            $params[] = strtotime($end_time);
+            $condition[] = "a.create_time <= ?";
         }
 
         //获取几天前根据的记录
         $no_follow_up_days = $request->get('no_follow_up_days', "");
         if ($no_follow_up_days != "") {
-            $params[':no_follow_up_days'] = strtotime(date("Y-m-d"), time()) - ((int)$no_follow_up_days * 3600 * 24);
-            $condition[] = "a.follow_up_time <= :no_follow_up_days";
+            $params[] = strtotime(date("Y-m-d"), time()) - ((int)$no_follow_up_days * 3600 * 24);
+            $condition[] = "a.follow_up_time <= ?";
         }
 
         $condition = implode(" and ", $condition);
@@ -149,12 +149,12 @@ class Custom extends Model
         $userInfo = config("webconfig.userInfo");
         switch ($userInfo["data_authority"]) {
             case "self":
-                $condition[] = "a.uid = :uid and a.in_high_seas = 0 and a.delete_time = 0";
-                $params[":uid"] = $userInfo['uid'];
+                $condition[] = "a.uid = ? and a.in_high_seas = 0 and a.delete_time = 0";
+                $params[] = $userInfo['uid'];
                 break;
             case "department":
-                $condition[] = "a.department_id = :department_id and a.in_high_seas = 0 and a.delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "a.department_id = ? and a.in_high_seas = 0 and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "all":
                 $condition[] = " a.in_high_seas = 0 and a.delete_time = 0";
@@ -167,44 +167,44 @@ class Custom extends Model
         //获取公司名以及编号中包含对应关键字的客户档案
         $keyword = $request->get('keyword', "");
         if ($keyword != "") {
-            $condition[] = "(a.name like :name or a.identify like :identify)";
-            $params[':name'] = trim($keyword) . "%";
-            $params[':identify'] = trim($keyword) . "%";
+            $condition[] = "(a.name like ? or a.identify like ?)";
+            $params[] = trim($keyword) . "%";
+            $params[] = trim($keyword) . "%";
         }
 
         //获取对应省份的客户档案
         $province = $request->get('province', "");
         if ($province != "") {
-            $condition[] = "a.province = :province";
-            $params[':province'] = trim($province);
+            $condition[] = "a.province = ?";
+            $params[] = trim($province);
         }
 
         //获取对应城市的客户档案
         $city = $request->get('city', "");
         if ($city != "") {
-            $condition[] = "a.city = :city";
-            $params[':city'] = trim($city);
+            $condition[] = "a.city = ?";
+            $params[] = trim($city);
         }
 
         //获取对应区/县的客户档案
         $area = $request->get('area', "");
         if ($area != "") {
-            $condition[] = "a.area = :area";
-            $params[':area'] = trim($area);
+            $condition[] = "a.area = ";
+            $params[] = trim($area);
         }
 
         //获取什么时间段后建立的客户档案
         $start_time = $request->get('start_time', "");
         if ($start_time != "") {
-            $params[':start_time'] = strtotime($start_time);
-            $condition[] = "a.create_time >= :start_time";
+            $params[] = strtotime($start_time);
+            $condition[] = "a.create_time >= ?";
         }
 
         //获取什么时间段前建立的客户档案
         $end_time = $request->get('end_time', "");
         if ($end_time != "") {
-            $params[':end_time'] = strtotime($end_time);
-            $condition[] = "a.create_time <= :end_time";
+            $params[] = strtotime($end_time);
+            $condition[] = "a.create_time <= ?";
         }
 
         $condition = implode(" and ", $condition);

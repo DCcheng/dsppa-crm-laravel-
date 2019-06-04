@@ -191,7 +191,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public static function getCategoryForPidList($pid,$is_value = false)
     {
         $list = array();
-        $categoryList = Category::getChildrenList("pid = :pid  and status = 1 and id > 100 and delete_time = 0", [":pid" => $pid]);
+        $categoryList = Category::getChildrenList("pid = ?  and status = 1 and id > 100 and delete_time = 0", [$pid]);
         if($is_value) {
             foreach ($categoryList as $key => $value) {
                 $value = (array)$value;
@@ -223,7 +223,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
             $v = static::setTreeData($value, $level);
             $treeArrForId[$v["id"]] = $v;
             $treeArr[] = $v;
-            list($treeArr, $treeArrForId,$childrenList) = static::getTreeList($condition, [":pid" => $v["id"]], $level + 1, $treeArr,$treeArrForId);
+            list($treeArr, $treeArrForId,$childrenList) = static::getTreeList($condition, [$v["id"]], $level + 1, $treeArr,$treeArrForId);
             $v["children"] = $childrenList;
             if (count($v["children"]) == 0) {
                 $v["children"] = false;
@@ -255,7 +255,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
      * @param array $params
      * @return mixed
      */
-    public static function getChildrenList($condition = "pid = :pid  and status = 1", $params = array())
+    public static function getChildrenList($condition = "pid = ?  and status = 1", $params = array())
     {
         $list = DB::table(DB::raw(static::getTableName()))->whereRaw($condition, $params)->orderByRaw("sort,id")->get()->toArray();
         return $list;

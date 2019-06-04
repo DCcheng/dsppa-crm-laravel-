@@ -30,10 +30,10 @@ class Product extends Model
 
         $keyword = $request->get("keyword","");
         if ($keyword != "") {
-            $condition[] = "(product_name like :product_name) or (product_model like :product_model)  or (brand like :brand)";
-            $params[':product_name'] = "%".trim($keyword) . "%";
-            $params[':product_model'] = "%".trim($keyword) . "%";
-            $params[':brand'] = "%".trim($keyword) . "%";
+            $condition[] = "(product_name like ?) or (product_model like ?)  or (brand like ?)";
+            $params[] = "%".trim($keyword) . "%";
+            $params[] = "%".trim($keyword) . "%";
+            $params[] = "%".trim($keyword) . "%";
         }
 
         $condition = implode(" and ", $condition);

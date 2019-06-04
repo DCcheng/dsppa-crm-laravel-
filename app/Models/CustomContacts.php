@@ -54,8 +54,8 @@ class CustomContacts extends Model
 
         $custom_id = $request->get("custom_id", "");
         if ($custom_id != "") {
-            $params[':custom_id'] = (int)$custom_id;
-            $condition[] = "custom_id = :custom_id";
+            $params[] = (int)$custom_id;
+            $condition[] = "custom_id = ?";
         }
 
         $condition = implode(" and ", $condition);

@@ -54,10 +54,10 @@ class Menu extends Model
         }
     }
 
-    public static function getTree($conditon = "pid = :pid and status = 1 and delete_time = 0")
+    public static function getTree($conditon = "pid = ? and status = 1 and delete_time = 0")
     {
         $arr = [array("id" => 0, "pid" => 0,"value"=>0, "text" => "顶级菜单", "icon" => "fa fa-code", "url" => "","opened"=>true, "tree_title" => "顶级菜单", "level" => 0)];
-        return Menu::getTreeList($conditon, [":pid" => 0], 0,$arr,$arr);
+        return Menu::getTreeList($conditon, [0], 0,$arr,$arr);
     }
 
     public static function setTreeData($value, $level)

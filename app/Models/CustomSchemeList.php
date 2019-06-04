@@ -39,8 +39,8 @@ class CustomSchemeList extends Model
 
         $scheme_id = $request->get("scheme_id","");
         if ($scheme_id != "") {
-            $params[':scheme_id'] = (int)$scheme_id;
-            $condition[] = "scheme_id = :scheme_id";
+            $params[] = (int)$scheme_id;
+            $condition[] = "scheme_id = ?";
         }
 
         $condition = implode(" and ", $condition);

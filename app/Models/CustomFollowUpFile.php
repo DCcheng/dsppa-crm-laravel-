@@ -35,8 +35,8 @@ class CustomFollowUpFile extends Model
         $custom_id = $request->get("custom_id","");
         if ($custom_id == "")
             throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE ." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
-        $condition[] = "custom_id = :custom_id and delete_time = 0";
-        $params[":custom_id"] = $_GET['custom_id'];
+        $condition[] = "custom_id = ? and delete_time = 0";
+        $params[] = $custom_id;
         $condition = implode(" and ", $condition);
         return array($condition, $params, $arr, $page, $size);
     }

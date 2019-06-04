@@ -27,7 +27,7 @@ class CustomScheme extends Model
     {
         $customInfo = DB::table(DB::raw(Custom::getTableName()." as a"))->selectRaw("a.name,a.discount,b.name as person_to_contact,b.phone")
             ->join(DB::raw(CustomContacts::getTableName() . " as b"), DB::raw("b.custom_id"), "=", DB::raw("a.id"))
-            ->whereRaw("a.id = :id", [":id" => $model->custom_id])->orderByRaw("b.create_time")->first();
+            ->whereRaw("a.id = ?", [$model->custom_id])->orderByRaw("b.create_time")->first();
         if ($customInfo) {
             $model->custom_name = is_null($model->custom_name) ? $customInfo->name : $model->custom_name;
             $model->person_to_contact = is_null($model->person_to_contact) ? $customInfo->person_to_contact : $model->person_to_contact;
@@ -50,27 +50,27 @@ class CustomScheme extends Model
 
         $custom_id = $request->get("custom_id","");
         if ($custom_id != '') {
-            $params[':custom_id'] = (int)$custom_id;
-            $condition[] = "custom_id = :custom_id";
+            $params[] = (int)$custom_id;
+            $condition[] = "custom_id = ?";
         }
 
         //获取公司名以及编号中包含对应关键字的客户方案卡
         $keyword = $request->get("keyword","");
         if ($keyword != "") {
-            $condition[] = "(project_name like :keyword)";
-            $params[':keyword'] = trim($keyword) . "%";
+            $condition[] = "(project_name like ?)";
+            $params[] = trim($keyword) . "%";
         }
 
         $start_time = $request->get('start_time', "");
         if ($start_time != "") {
-            $params[':start_time'] = strtotime($start_time);
-            $condition[] = "a.create_time >= :start_time";
+            $params[] = strtotime($start_time);
+            $condition[] = "a.create_time >= ?";
         }
 
         $end_time = $request->get('end_time', "");
         if ($end_time != "") {
-            $params[':end_time'] = strtotime($end_time);
-            $condition[] = "a.create_time <= :end_time";
+            $params[] = strtotime($end_time);
+            $condition[] = "a.create_time <= ?";
         }
 
         $condition = implode(" and ", $condition);

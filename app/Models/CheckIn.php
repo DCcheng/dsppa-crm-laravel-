@@ -37,12 +37,12 @@ class CheckIn extends Model
         $userInfo = config("webconfig.userInfo");
         switch ($userInfo["data_authority"]) {
             case "self":
-                $condition[] = "a.uid = :uid and a.delete_time = 0";
-                $params[":uid"] = $userInfo['uid'];
+                $condition[] = "a.uid = ? and a.delete_time = 0";
+                $params[] = $userInfo['uid'];
                 break;
             case "department":
-                $condition[] = "a.department_id = :department_id and a.delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "a.department_id = ? and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "all":
                 $condition[] = "a.delete_time = 0";
@@ -54,26 +54,26 @@ class CheckIn extends Model
 
         $keyword = $request->get("keyword","");
         if ($keyword != "") {
-            $condition[] = "c.truename like :keyword";
-            $params[':keyword'] = trim($keyword) . "%";
+            $condition[] = "c.truename like ?";
+            $params[] = trim($keyword) . "%";
         }
 
         $department_name = $request->get("department_name","");
         if ($department_name != "") {
-            $condition[] = "b.title like :department_name";
-            $params[':department_name'] = trim($department_name) . "%";
+            $condition[] = "b.title like ?";
+            $params[] = trim($department_name) . "%";
         }
 
         $start_time = $request->get("start_time","");
         if ($start_time != "") {
-            $params[':start_time'] = strtotime($start_time);
-            $condition[] = " a.create_time >= :start_time";
+            $params[] = strtotime($start_time);
+            $condition[] = " a.create_time >= ?";
         }
 
         $end_time = $request->get("end_time","");
         if ($end_time != "") {
-            $params[':end_time'] = strtotime($end_time);
-            $condition[] = " a.create_time <= :end_time";
+            $params[] = strtotime($end_time);
+            $condition[] = " a.create_time <= ?";
         }
 
         $condition = implode(" and ", $condition);

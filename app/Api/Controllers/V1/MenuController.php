@@ -95,10 +95,10 @@ class MenuController extends Controller
     public function leftmenu(){
         $userInfo = config("webconfig.userInfo");
         $ids = implode(",", $userInfo["menu"]);
-        $list = Menu::getChildrenList("pid = :pid and id in ($ids)  and status = 1", [":pid" => 0]);
+        $list = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1", [0]);
         foreach ($list as $key => $value) {
             $value = (array)$value;
-            $value["childrenList"] = Menu::getChildrenList("pid = :pid and id in ($ids)  and status = 1", [":pid" => $value["id"]]);
+            $value["childrenList"] = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1", [$value["id"]]);
             $list[$key] = $value;
         }
         return Response::success(["data"=>$list]);

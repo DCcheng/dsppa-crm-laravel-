@@ -48,16 +48,16 @@ class CustomFollowUpRecord extends Model
             case "custom":
                 if ($custom_id == "")
                     throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE ." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
-                $condition[] = "custom_id = :custom_id and delete_time = 0";
-                $params[":custom_id"] = $custom_id;
+                $condition[] = "custom_id = ? and delete_time = 0";
+                $params[] = $custom_id;
                 break;
             case "user":
-                $condition[] = "uid = :uid and delete_time = 0";
-                $params[":uid"] = $userInfo['uid'];
+                $condition[] = "uid = ? and delete_time = 0";
+                $params[] = $userInfo['uid'];
                 break;
             case "department":
-                $condition[] = "department_id = :department_id and delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "department_id = ? and delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "all":
                 $condition[] = "delete_time = 0";

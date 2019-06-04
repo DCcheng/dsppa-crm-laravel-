@@ -37,12 +37,12 @@ class Log extends Model
         //在客户列表中也根据访问用户的数据权限分为了，自己、部门和所有
         switch ($userInfo["data_authority"]) {
             case "self":
-                $condition[] = "a.uid = :uid and a.delete_time = 0";
-                $params[":uid"] = $userInfo['uid'];
+                $condition[] = "a.uid = ? and a.delete_time = 0";
+                $params[] = $userInfo['uid'];
                 break;
             case "department":
-                $condition[] = "b.department_id = :department_id and a.delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "b.department_id = ? and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "all":
                 $condition[] = " a.delete_time = 0";
@@ -52,15 +52,16 @@ class Log extends Model
                 break;
         }
 
-
-        if (isset($_GET['start_time']) && $_GET["start_time"] != "") {
-            $params[':start_time'] = strtotime($_GET['start_time']);
-            $condition[] = " a.create_time >= :start_time";
+        $start_time = $request->get('start_time', "");
+        if ($start_time != "") {
+            $params[] = strtotime($start_time);
+            $condition[] = "a.create_time >= ?";
         }
 
-        if (isset($_GET['end_time']) && $_GET["end_time"] != "") {
-            $params[':end_time'] = strtotime($_GET['end_time']);
-            $condition[] = " a.create_time <= :end_time";
+        $end_time = $request->get('end_time', "");
+        if ($end_time != "") {
+            $params[] = strtotime($end_time);
+            $condition[] = "a.create_time <= ?";
         }
 
         $condition = implode(" and ", $condition);

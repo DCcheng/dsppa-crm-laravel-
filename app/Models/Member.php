@@ -49,7 +49,7 @@ class Member extends Model
     public static function login()
     {
         $username = $_POST['username'];
-        $model = self::whereRaw("username = :username and status = 1", [":username" => $username])->first();
+        $model = self::whereRaw("username = ? and status = 1", [$username])->first();
         if ($model) {
             $encryptArr = Encrypt::start($_POST['password'], $model->code);
             if ($model->password == $encryptArr['password']) {
@@ -63,7 +63,7 @@ class Member extends Model
                     $info = DB::table(DB::raw(self::getTableName()." as a"))->selectRaw('a.uid,a.truename,a.avatar,a.department_id,a.password,a.code,d.id as role_id,d.title as rolename,d.menu,d.access,d.data_authority')
                         ->join(DB::raw(MemberAccess::getTableName()." as c"),DB::raw("c.uid"),"=",DB::raw("a.uid"))
                         ->join(DB::raw(Role::getTableName()." as d"),DB::raw("d.id"),"=",DB::raw("c.role_id"))
-                        ->whereRaw("a.uid = :uid",[":uid"=>$model->uid])
+                        ->whereRaw("a.uid = ?",[$model->uid])
                         ->first();
 
                     if ($info) {
@@ -99,12 +99,12 @@ class Member extends Model
         $userInfo = config("webconfig.userInfo");
         switch ($userInfo["data_authority"]) {
             case "self":
-                $condition[] = "a.uid = :uid and a.delete_time = 0";
-                $params[":uid"] = $userInfo['uid'];
+                $condition[] = "a.uid = ? and a.delete_time = 0";
+                $params[] = $userInfo['uid'];
                 break;
             case "department":
-                $condition[] = "a.department_id = :department_id and a.delete_time = 0";
-                $params[":department_id"] = $userInfo['department_id'];
+                $condition[] = "a.department_id = ? and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
                 break;
             case "all":
                 $condition[] = " a.delete_time = 0";
@@ -116,22 +116,22 @@ class Member extends Model
 
         $keyword = $request->get("keyword","");
         if ($keyword != "") {
-            $condition[] = "(a.username like :username or a.attence_num like :attence_num  or a.phone like :phone)";
-            $params[':username'] = trim($keyword) . "%";
-            $params[':attence_num'] = trim($keyword) . "%";
-            $params[':phone'] = trim($keyword) . "%";
+            $condition[] = "(a.username like ? or a.attence_num like ?  or a.phone like ?)";
+            $params[] = trim($keyword) . "%";
+            $params[] = trim($keyword) . "%";
+            $params[] = trim($keyword) . "%";
         }
 
         $start_time = $request->get("start_time","");
         if ($start_time != "") {
-            $params[':last_login_time'] = strtotime($start_time);
-            $condition[] = " a.last_login_time >= :start_time";
+            $params[] = strtotime($start_time);
+            $condition[] = " a.last_login_time >= ?";
         }
 
         $end_time = $request->get("end_time","");
         if ($end_time != "") {
-            $params[':last_login_time'] = strtotime($end_time);
-            $condition[] = " a.last_login_time <= :end_time";
+            $params[] = strtotime($end_time);
+            $condition[] = " a.last_login_time <= ?";
         }
 
         $condition = implode(" and ", $condition);
