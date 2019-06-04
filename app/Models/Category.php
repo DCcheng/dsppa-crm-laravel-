@@ -37,27 +37,28 @@ class Category extends Model
             ->selectRaw("a.id,count(b.id) as total,a.title as title")
             ->join(DB::raw(Category::getTableName()." as b"),DB::raw("b.pid"),"=",DB::raw("a.id"))
             ->whereRaw("a.id in ($ids)")
-            ->groupByRaw(DB::raw("a.id"));
+            ->groupBy(DB::raw("a.id,a.title"));
 
         $customUseListForClass = DB::table(DB::raw(self::getTableName() . " as a"))
             ->selectRaw("a.id,count(b.id) as total,a.title as title")
             ->join(DB::raw(Custom::getTableName()." as b"),DB::raw("b.cid"),"=",DB::raw("a.id"))
             ->whereRaw("a.id in ($ids)")
-            ->groupByRaw(DB::raw("a.id"));
+            ->groupBy(DB::raw("a.id,a.title"));
 
         $customFollowUpRecordForClass = DB::table(DB::raw(self::getTableName() . " as a"))
             ->selectRaw("a.id,count(b.id) as total,a.title as title")
             ->join(DB::raw(CustomFollowUpRecord::getTableName()." as b"),DB::raw("b.cid"),"=",DB::raw("a.id"))
             ->whereRaw("a.id in ($ids)")
-            ->groupByRaw(DB::raw("a.id"));
+            ->groupByRaw(DB::raw("a.id,a.title"));
 
         $list = DB::table(DB::raw(self::getTableName() . " as a"))
             ->selectRaw("a.id,count(b.id) as total,a.title as title")
             ->join(DB::raw(CustomFollowUpFile::getTableName()." as b"),DB::raw("b.cid"),"=",DB::raw("a.id"))
             ->whereRaw("a.id in ($ids)")
-            ->groupByRaw(DB::raw("a.id"))->union($categoryUseList)->union($customUseListForClass)->union($customFollowUpRecordForClass)->get()->toArray();
+            ->groupBy(DB::raw("a.id,a.title"))->union($categoryUseList)->union($customUseListForClass)->union($customFollowUpRecordForClass)->get()->toArray();
 
         foreach ($list as $value) {
+            $value = (array)$value;
             if ((int)$value["total"] > 0) {
                 $bool = false;
                 $msgArr[$value["id"]] = $value["id"] . " - " . $value["title"];

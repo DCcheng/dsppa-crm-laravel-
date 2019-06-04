@@ -1,44 +1,30 @@
 <?php
 /**
- *  FileName: Access.php
+ *  FileName: Menu.php
  *  Description :
  *  Author: DC
- *  Date: 2019/6/3
- *  Time: 15:15
+ *  Date: 2019/6/4
+ *  Time: 8:55
  */
 
 
 namespace App\Models;
 
+
 use App\Api\Requests\ListRequest;
 use App\Api\Utils\Response;
-use App\Models\Model;
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 
-class Access extends Model
+class Menu extends Model
 {
-    protected $table = "access";
-
-    public static function addAttributes($model)
-    {
-        $model->url = strtolower($model->controller . "/" . $model->method);
-        $model->create_time = time();
-        $model->delete_time = 0;
-        return $model;
-    }
-
-    public static function editAttributes($model)
-    {
-        $model->url = strtolower($model->controller . "/" . $model->method);
-        return $model;
-    }
+    protected $table = "menu";
 
     public static function deleteForIds($ids, $field = "id")
     {
         $bool = true;
-        $msgArr = ["以下访问节点数据已经被引用，不允许删除："];
+        $msgArr = ["以下菜单数据已经被引用，不允许删除："];
         $ids = is_array($ids) ? implode(",", $ids) : $ids;
         $list = DB::table(DB::raw(self::getTableName()." as a"))
             ->selectRaw("b.id,count(a.id) as total,b.title as title")
@@ -70,8 +56,8 @@ class Access extends Model
 
     public static function getTree($conditon = "pid = :pid and status = 1 and delete_time = 0")
     {
-        $arr = [array("id" => 0, "pid" => 0, "text" => "顶级访问节点","value"=>0, "controller" => "", "method" => "", "url" => "","opened"=>true, "tree_title" => "顶级访问节点", "level" => 0)];
-        return self::getTreeList($conditon, [":pid" => 0], 0, $arr,$arr);
+        $arr = [array("id" => 0, "pid" => 0,"value"=>0, "text" => "顶级菜单", "icon" => "fa fa-code", "url" => "","opened"=>true, "tree_title" => "顶级菜单", "level" => 0)];
+        return Menu::getTreeList($conditon, [":pid" => 0], 0,$arr,$arr);
     }
 
     public static function setTreeData($value, $level)
@@ -81,7 +67,7 @@ class Access extends Model
         } else {
             $treeTitle = $value->title;
         }
-        return ["id" => $value->id, "pid" => $value->pid, "text" => $value->title,"value"=>$value->id, "controller" => $value->controller, "method" => $value->method, "url" => $value->url,"opened"=>$level>2?false:true, "tree_title" => $treeTitle, "level" => $level];
+        return ["id" => $value->id, "pid" => $value->pid, "text" => $value->title,"value"=>$value->id, "icon" => $value->icon, "url" => $value->url,"opened"=>$level>2?false:true, "tree_title" => $treeTitle, "level" => $level];
     }
 
     public static function getParams(ListRequest $request,$size = 15)

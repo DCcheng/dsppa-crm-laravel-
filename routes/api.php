@@ -79,6 +79,23 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('access/delete', 'App\Api\Controllers\V1\AccessController@delete');
         $api->get('access/tree', 'App\Api\Controllers\V1\AccessController@tree');
 
+        //10.菜单接口
+        $api->get('menu', 'App\Api\Controllers\V1\MenuController@index');
+        $api->post('menu/add', 'App\Api\Controllers\V1\MenuController@add');
+        $api->post('menu/update', 'App\Api\Controllers\V1\MenuController@update');
+        $api->post('menu/delete', 'App\Api\Controllers\V1\MenuController@delete');
+        $api->get('menu/tree', 'App\Api\Controllers\V1\MenuController@tree');
+        $api->get('menu/leftmenu', 'App\Api\Controllers\V1\MenuController@leftmenu');
+
+        //11.角色接口
+        $api->get('role', 'App\Api\Controllers\V1\RoleController@index');
+        $api->post('role/add', 'App\Api\Controllers\V1\RoleController@add');
+        $api->post('role/update', 'App\Api\Controllers\V1\RoleController@update');
+        $api->post('role/delete', 'App\Api\Controllers\V1\RoleController@delete');
+        $api->get('role/trees', 'App\Api\Controllers\V1\RoleController@trees');
+        $api->get('role/all', 'App\Api\Controllers\V1\RoleController@all');
+        $api->get('role/show', 'App\Api\Controllers\V1\RoleController@show');
+
         //13.用户接口
         $api->get("public/logout", 'App\Api\Controllers\V1\PublicController@logout');
 

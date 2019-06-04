@@ -257,7 +257,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
      */
     public static function getChildrenList($condition = "pid = :pid  and status = 1", $params = array())
     {
-        $list = DB::table(DB::raw(static::getTableName()))->whereRaw($condition, $params)->orderByRaw("sort,id")->get();
+        $list = DB::table(DB::raw(static::getTableName()))->whereRaw($condition, $params)->orderByRaw("sort,id")->get()->toArray();
         return $list;
     }
 }
