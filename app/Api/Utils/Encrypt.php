@@ -19,8 +19,6 @@ class Encrypt
             $code = rand(1000, 9999);
         }
         $fixedStr = "BCC7C71CF93F9CDBDB88671B701D8A35";
-        $arr['code'] = $code;
-        $arr['password'] = md5($fixedStr . $str . $code);
-        return $arr;
+        return [md5($fixedStr . $str . $code),$code];
     }
 }

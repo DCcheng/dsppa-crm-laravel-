@@ -27,7 +27,7 @@ class Member extends Model
     public static function addAttributes($model)
     {
         $password = request()->get("password", "123456");
-        list("password" => $password, "code" => $code) = Encrypt::start($password);
+        list($password,$code) = Encrypt::start($password);
         $model->password = $password;
         $model->code = (string)$code;
         $model->create_time = time();
@@ -39,20 +39,21 @@ class Member extends Model
     {
         $password = request()->get("password", "");
         if ($password != "") {
-            list("password" => $password, "code" => $code) = Encrypt::start($password);
+            list($password,$code) = Encrypt::start($password);
             $model->password = $password;
             $model->code = (string)$code;
         }
         return $model;
     }
 
-    public static function login()
+    public static function login(Request $request)
     {
-        $username = $_POST['username'];
+        $username = $request->get("username","");
+        $password = $request->get("password","");
         $model = self::whereRaw("username = ? and status = 1", [$username])->first();
         if ($model) {
-            $encryptArr = Encrypt::start($_POST['password'], $model->code);
-            if ($model->password == $encryptArr['password']) {
+            list($password,$code) = Encrypt::start($password, $model->code);
+            if ($model->password == $password) {
                 DB::beginTransaction();
                 try {
                     //登录成功后的操作

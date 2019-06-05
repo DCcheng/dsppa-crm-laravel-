@@ -31,7 +31,7 @@ class PublicController extends Controller
     {
         try {
             $this->validate($request, ["username" => "", "password"], [], ["username" => "用户名", "password" => "密码"]);
-            $userInfo = Member::login();
+            $userInfo = Member::login($request);
             config(["webconfig.userInfo" => $userInfo]);
             list($token, $exp) = Token::create($userInfo);
             Log::create($request);
