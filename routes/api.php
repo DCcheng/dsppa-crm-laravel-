@@ -108,6 +108,8 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('department/update', 'App\Api\Controllers\V1\DepartmentController@update');
         $api->post('department/delete', 'App\Api\Controllers\V1\DepartmentController@delete');
         $api->get('department/tree', 'App\Api\Controllers\V1\DepartmentController@tree');
+        $api->post('department/transfer','App\Api\Controllers\V1\DepartmentController@transfer');
+        $api->get('department/all', 'App\Api\Controllers\V1\DepartmentController@all');
 
         //13.用户接口
         $api->get('member', 'App\Api\Controllers\V1\MemberController@index');
@@ -116,7 +118,9 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('member/delete', 'App\Api\Controllers\V1\MemberController@delete');
         $api->post('member/changepassword', 'App\Api\Controllers\V1\MemberController@changepassword');
         $api->get("public/logout", 'App\Api\Controllers\V1\PublicController@logout');
-        $api->post('member/transfer', 'App\Api\Controllers\V1\MemberController@transfer');
+        $api->post('member/transferdepartment', 'App\Api\Controllers\V1\MemberController@transferDepartment');
+        $api->get("member/departmentall", 'App\Api\Controllers\V1\MemberController@departmentall');
+        $api->post('member/transferdata', 'App\Api\Controllers\V1\MemberController@transferData');
 
         //14.文件管理
         $api->post("public/uploadfile", 'App\Api\Controllers\V1\PublicController@uploadfile');

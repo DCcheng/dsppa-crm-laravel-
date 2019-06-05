@@ -4,5 +4,8 @@
 /storage/*.key
 /.idea
 /config
+/tests
 Homestead.json
 Homestead.yaml
+.env
+.env.example

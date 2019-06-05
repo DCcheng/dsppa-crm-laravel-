@@ -119,44 +119,63 @@ class MemberController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function transfer(Request $request)
+    public function transferDepartment(Request $request)
     {
         $this->validate($request, [
             'uid' => 'required|integer',
-            'department_id' => 'required|integer',
-            'type' => 'required|string'
-        ], [], ["uid" => "用户ID", "department_id" => "部门ID", "type" => "转移类型"]);
-
+            'department_id' => 'required|integer'
+        ], [], ["uid" => "用户ID", "department_id" => "目标部门ID"]);
+        $uid = $request->get("uid");
+        $department_id = $request->get("department_id");
         DB::beginTransaction();
         try {
-            $type = $request->get("type");
-            $uid = (int)$request->get("uid");
-            $department_id = $request->get("department_id");
-            switch ($type) {
-                case "take_away":
-                    Member::updateForData($uid, ["department_id" => $department_id]);
-                    Custom::whereRaw("uid = ?", [$uid])->update(["department_id" => $department_id]);
-                    CustomFollowUpRecord::whereRaw("uid = ?", [$uid])->update(["department_id" => $department_id]);
-                    break;
-                case "to_member":
-                case "to_high_seas":
-                    $this->validate($request, ['to_uid' => 'required|integer'], [], ["to_uid" => "目标用户ID"]);
-                    Member::updateForData($uid, ["department_id" => $department_id]);
-                    $in_high_seas = $type == "to_high_seas" ? 1 : 0;
-                    $to_uid = $type == "to_high_seas" ? 0 : $request->get("to_uid");
-                    Custom::whereRaw("uid = ?", [$uid])->update(["uid" => $to_uid, "in_high_seas" => $in_high_seas]);
-                    CustomFollowUpRecord::whereRaw("uid = ?", [$uid])->update(["uid" => $to_uid]);
-                    break;
-                default:
-                    DB::rollBack();
-                    return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
-                    break;
-            }
+            Member::where("uid",$uid)->update(["department_id" => $department_id]);
+            Custom::where("uid",$uid)->update(["department_id" => $department_id]);
+            CustomFollowUpRecord::where("uid",$uid)->update(["department_id" => $department_id]);
             DB::commit();
             return Response::success();
         } catch (Exception $exception) {
             DB::rollBack();
-            return Response::fail($exception->getCode()." - ".$exception->getMessage());
+            return Response::fail($exception->getCode() . " - " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * 13.9 - 根据部门ID获取部门内部所有用户
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function departmentall(Request $request)
+    {
+        $this->validate($request, ['department_id' => 'required|integer'], [], ["department_id" => "部门ID"]);
+        $list = Member::selectRaw("uid,truename")->where("department_id", $request->get("department_id"))->where("delete_time",0)->get();
+        return Response::success(["data" => $list]);
+    }
+
+    /**
+     * 13.10 - 把用户数据转移给其他用户
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function transferData(Request $request)
+    {
+        $this->validate($request, [
+            'from_uid' => 'required|integer',
+            'to_uid' => 'required|integer'
+        ], [], ["from_uid" => "源用户ID", "department_id" => "目标用户ID"]);
+
+        DB::beginTransaction();
+        try {
+            $from_uid = (int)$request->get("from_uid");
+            $to_uid = $request->get("to_uid");
+            $toMemberInfo = Member::find($to_uid);
+            Custom::whereRaw("uid = ?", [$from_uid])->update(["uid"=>$toMemberInfo->uid,"department_id" => $toMemberInfo->department_id]);
+            CustomFollowUpRecord::whereRaw("uid = ?", [$from_uid])->update(["uid"=>$toMemberInfo->uid,"department_id" => $toMemberInfo->department_id]);
+            DB::commit();
+            return Response::success();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return Response::fail($exception->getCode() . " - " . $exception->getMessage());
         }
     }
 }

@@ -27,9 +27,9 @@ class InitApiMiddleware
             $actionName = explode("\\", $request->route()->getActionName());
             list($controllerName, $methodName) = explode("@", end($actionName));
             $url = $controllerName . "/" . $methodName;
-            if (!in_array($url, $userInfo["accessUrlArr"])) {
-                return Response::fail(Constant::SYSTEM_NO_ACTION_AUTHORITY_CODE . " - " . Constant::SYSTEM_NO_ACTION_AUTHORITY_MESSAGE, 403);
-            }
+//            if (!in_array($url, $userInfo["accessUrlArr"])) {
+//                return Response::fail(Constant::SYSTEM_NO_ACTION_AUTHORITY_CODE . " - " . Constant::SYSTEM_NO_ACTION_AUTHORITY_MESSAGE, 403);
+//            }
             return $next($request);
         } catch (TokenException $exception) {
             return Response::fail($exception->getCode() . " - " . $exception->getMessage(), 401);

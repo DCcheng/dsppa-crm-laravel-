@@ -16,7 +16,10 @@ use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
+use App\Models\Custom;
+use App\Models\CustomFollowUpRecord;
 use App\Models\Department;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -88,5 +91,60 @@ class DepartmentController extends Controller
     public function tree(){
         list($list) = Department::getTree();
         return Response::success(["data"=>$list]);
+    }
+
+    /**
+     * 12.6 - 部门合并/部门数据移交
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function transfer(Request $request){
+        $this->validate($request, [
+            'department_id' => 'required|integer',
+            'to_department_id' => 'required|integer',
+            'type'=>'string'
+        ], [], ["department_id" => "原部门ID","to_department_id"=>"目标部门ID","type"=>"转移类型"]);
+        $department_id = $request->get("department_id",0);
+        $to_department_id = $request->get("to_department_id",0);
+        $type = $request->get("type","transfer");
+        DB::beginTransaction();
+        try{
+            Member::whereRaw("department_id = ?",[$department_id])->update(["department_id"=>$to_department_id]);
+            Custom::whereRaw("department_id = ?",[$department_id])->update(["department_id"=>$to_department_id]);
+            CustomFollowUpRecord::whereRaw("department_id = ?",[$department_id])->update(["department_id"=>$to_department_id]);
+            switch ($type){
+                case "merge":
+                    Department::deleteForIds($department_id);
+                    break;
+            }
+            DB::commit();
+            return Response::success();
+        }catch (Exception $exception){
+            DB::rollBack();
+            return Response::fail($exception->getMessage());
+        }
+    }
+
+    /**
+     * 12.7 - 获取授权的部门列表
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function all(Request $request){
+        $userInfo = config("webconfig.userInfo");
+        $condition = "";$params = [];
+        switch ($userInfo["data_authority"]){
+            case "self":
+            case "department":
+                $condition = "id = ? and delete_time = 0";
+                $params[] = $userInfo["department_id"];
+                break;
+            case "all":
+                $condition = "delete_time = 0";
+                break;
+        }
+        $orderRaw = "sort asc,id";
+        $arr['list'] = DB::table(DB::raw(Department::getTableName()))->selectRaw("id,title,sort")->whereRaw($condition, $params)->orderByRaw($orderRaw)->get();
+        return Response::success(["data" => $arr]);
     }
 }
