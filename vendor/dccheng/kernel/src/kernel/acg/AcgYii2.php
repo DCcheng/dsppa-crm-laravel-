@@ -16,100 +16,71 @@ use yii\helpers\Inflector;
 
 class AcgYii2
 {
-    public $controllerFileName;
-    public $modelFileName;
+    public $table;
+    public $modelNamespace = "common\\models";
+    public $controllerNamespace = "api\\controllers";
+    public $modelName = "";
+    public $controllerName = "";
+    public $CN_Name = "模板";
 
-    public function run($config){
-        if(isset($config["Controller"]) && isset($config["Model"])) {
-            try {
-                $config["CN_Name"] = isset($config["CN_Name"]) ? $config["CN_Name"] : "模板";
-
-                $controllerArr = explode("\\",$config["Controller"]);
-                $controllerName = ucfirst(strtolower(end($controllerArr)))."Controller";
-                if(count($controllerArr) == 1) {
-                    $controllerNamespace = "api\\controllers";
-                }else{
-                    array_pop($controllerArr);
-                    $controllerNamespace = implode("\\",$controllerArr);
-                }
-
-                $modelArr = explode("\\",$config["Model"]);
-                $tableName = strtolower(end($modelArr));
-                $modelName = ucfirst($tableName);
-                if(count($modelArr) == 1) {
-                    $modelNamespace = "common\\models";
-                }else{
-                    array_pop($modelArr);
-                    $modelNamespace = implode("\\",$modelArr);
-                }
-
-                $this->setController($controllerName, $modelName,$controllerNamespace,$modelNamespace, $config["CN_Name"]);
-                $this->setModel($modelName,$tableName,$modelNamespace);
-            }catch (Exception $e){
-                if(file_exists($this->controllerFileName)){
-                    unlink($this->controllerFileName);
-                }
-                if(file_exists($this->modelFileName)){
-                    unlink($this->modelFileName);
-                }
-                throw new Exception($e->getMessage());
+    public function run($config)
+    {
+        try {
+            $this->table = $config["Table"];
+            if (isset($config["modelNamespace"])) {
+                $this->modelNamespace = $config["modelNamespace"];
             }
-        }else{
-            throw new Exception("缺乏必要参数Controller或者Model");
+            if (isset($config["controllerNamespace"])) {
+                $this->controllerNamespace = $config["controllerNamespace"];
+            }
+            if (isset($config["CN_Name"])) {
+                $this->CN_Name = $config["CN_Name"];
+            }
+            $tableArr = explode("_", $this->table);
+            $this->modelName = "";
+            foreach ($tableArr as $value) {
+                $this->modelName .= ucfirst(strtolower($value));
+            }
+
+            $this->controllerName = $this->modelName . "Controller";
+
+            $this->setController();
+            $this->setModel();
+        }catch (\Exception $exception){
+            if(file_exists($this->getPath($this->controllerNamespace)."\\".$this->controllerName.".php")){
+                unlink($this->getPath($this->controllerNamespace)."\\".$this->controllerName.".php");
+            }
+            if(file_exists($this->getPath($this->modelNamespace)."\\".$this->modelName.".php")){
+                unlink($this->getPath($this->modelNamespace)."\\".$this->modelName.".php");
+            }
+            throw new Exception($e->getMessage());
         }
     }
 
-    public function setController($controllerName,$modelName,$namespace,$modelNamespace,$CN_Name){
-
-        $pathArr = explode("\\",Yii::getAlias("@common"));
-        array_pop($pathArr);
-        $path = implode("\\",$pathArr)."\\".$namespace;
-        if(!is_dir($path)){
-            mkdir($path,0644,true);
-        }
-        $this->controllerFileName = $path."\\".$controllerName.".php";
-        $tplPath = __DIR__."/yii2";
-        $str = file_get_contents($tplPath."/Controller.tpl");
-        $str = str_replace("{{Namespace}}",$namespace,$str);
-        $str = str_replace("{{Controller}}",$controllerName,$str);
-        $str = str_replace("{{ModelNamespace}}",$modelNamespace,$str);
-        $str = str_replace("{{Model}}",$modelName,$str);
-        $str = str_replace("{{*}}",$CN_Name,$str);
-        file_put_contents($this->controllerFileName,"<?php \n".$str."\n?>");
+    public function setController(){
+        $this->setTpl($this->controllerNamespace,$this->controllerName,"Controller.tpl",function ($str) {
+            $str = str_replace("{{modelNamespace}}",$this->modelNamespace,$str);
+            $str = str_replace("{{modelName}}",$this->modelName,$str);
+            $str = str_replace("{{*}}",$this->CN_Name,$str);
+            return $str;
+        });
     }
 
-    public function setModel($modelName,$tableName,$namespace){
+    public function setModel(){
+        $this->setTpl($this->modelNamespace,$this->modelName,"Model.tpl",function ($str){
+            $table = Yii::$app->db->getSchema()->getTableSchema('{{%'.$this->table.'}}');
+            if(is_null($table)){
+                throw new Exception("不存在该数据表");
+            }
+            $str = str_replace("{{table}}",'{{%'.$this->table.'}}',$str);
+            list($rules,$lables) = $this->setModelData($table);
+            $ruleStr = "\n\t\t\t".implode(",\n\t\t\t",$rules)."\n\t\t";
+            $str = str_replace("{{rules}}",$ruleStr,$str);
 
-        $pathArr = explode("\\",Yii::getAlias("@common"));
-        array_pop($pathArr);
-        $path = implode("\\",$pathArr)."\\".$namespace;
-        if(!is_dir($path)){
-            mkdir($path,0644,true);
-        }
-        $this->modelFileName = $path."\\".$modelName.".php";
-
-        $table = Yii::$app->db->getSchema()->getTableSchema('{{%'.$tableName.'}}');
-
-        if(is_null($table)){
-            throw new Exception("不存在该数据表");
-        }
-
-        list($rules,$lables) = $this->setModelData($table);
-        
-        $tplPath = __DIR__."/yii2";
-        $str = file_get_contents($tplPath."/Model.tpl");
-
-        $str = str_replace("{{Namespace}}",$namespace,$str);
-        $str = str_replace("{{Model}}",$modelName,$str);
-        $str = str_replace("{{TableName}}",'{{%'.$tableName.'}}',$str);
-
-        $ruleStr = "\n\t\t\t".implode(",\n\t\t\t",$rules)."\n\t\t";
-        $str = str_replace("{{rules}}",$ruleStr,$str);
-
-        $lableStr = "\n\t\t\t".implode(",\n\t\t\t",$lables)."\n\t\t";
-        $str = str_replace("{{labels}}",$lableStr,$str);
-
-        file_put_contents($this->modelFileName,"<?php \n".$str."\n?>");
+            $lableStr = "\n\t\t\t".implode(",\n\t\t\t",$lables)."\n\t\t";
+            $str = str_replace("{{attributes}}",$lableStr,$str);
+            return $str;
+        });
     }
 
     protected function setModelData($table){
@@ -286,5 +257,27 @@ class AcgYii2
         }
 
         return $this->classNames[$fullTableName];
+    }
+
+    public function setTpl($namespace,$classname,$tpl,$callback){
+        $path = $this->getPath($namespace);
+        if (!is_dir($path)) {
+            mkdir($path, 0644, true);
+        }
+        $tplPath = __DIR__ . "/yii2";
+        $str = file_get_contents($tplPath . "/".$tpl);
+        $str = str_replace("{{Namespace}}", $namespace, $str);
+        $str = str_replace("{{className}}", $classname, $str);
+        $str = str_replace("{{date}}", date("Y-m-d", time()), $str);
+        $str = str_replace("{{time}}", date("H:i", time()), $str);
+        $str = $callback($str);
+        $filename = $path . "\\" . $classname . ".php";
+        file_put_contents($filename, "<?php \n" . $str . "\n?>");
+    }
+
+    public function getPath($namespace){
+        $pathArr = explode("\\",Yii::getAlias("@common"));
+        array_pop($pathArr);
+        $path = implode("\\",$pathArr)."\\".$namespace;
     }
 }

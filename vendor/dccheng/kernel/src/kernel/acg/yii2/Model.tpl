@@ -3,11 +3,11 @@ use common\vendor\db\VQuery;
 use Exception;
 use Yii;
 
-class {{Model}} extends \common\models\Model
+class {{className}} extends \common\models\Model
 {
     public static function tableName()
     {
-        return '{{TableName}}';
+        return '{{table}}';
     }
 
     public function rules()
@@ -17,7 +17,7 @@ class {{Model}} extends \common\models\Model
 
     public function attributeLabels()
     {
-        return [{{labels}}];
+        return [{{attributes}}];
     }
 
     public static function addAttributes($model)
@@ -30,7 +30,7 @@ class {{Model}} extends \common\models\Model
     //软删除
     public static function deleteDataForIds($condition)
     {
-        {{Model}}::updateAll(["delete_time" => time()], $condition);
+        self::updateAll(["delete_time" => time()], $condition);
     }
 
     public static function getParams($size = 15)

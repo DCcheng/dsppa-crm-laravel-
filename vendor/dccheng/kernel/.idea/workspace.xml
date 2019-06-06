@@ -1,32 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="94103d3a-9ef7-43b7-89fc-04012b0d0ef5" name="Default Changelist" comment="V0.1.1">
-      <change afterPath="$PROJECT_DIR$/src/kernel/acg/AcgFactory.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/acg/AcgYii2.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/acg/yii2/Controller.tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/acg/yii2/Model.tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/MDljZDg5NDMwMTUzYjA1ZjEyMGQ3ZDhhMzUyZGVhNjBiOTIzYzc5Zjg0NmRkYTVkYTBmYzE0OGNiMmM0Mjk2ZA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/MWExZWRiMzQwNjkzOTM0NWRlYzlmOTk4MDNiNTFkYTk3NGVmMDMwOTYyMjk4YzNjMzM1MmU4OTM5ZGQ1ZjEyMA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/MWU2NDJjNGE1N2U5N2UxYmQxMWQwYmY4MGY4MmU4ODhmZDlmYWZhNzBlMjFjNTljNmNiOTE0NGQ4MjhlOTZhMA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/MmQxNTQyNzg1NjU1OGU0MTFhZDhiMzk1N2NlMzJmZTJkZTVkNTc5N2RmMDAyZTg0ZWMzOTI0NWM0MWNhYjUzNw==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/MzU5YmM2ZDMyMmEyY2U2MDU1Y2Y1ZTM1OTc2YjBjZjZlOWEwMGE2ZTliYzhiYWZiZDIzMzJiMDE2YmJmNThhYQ==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NWEyMDNjNDUyMGE0OGRlOGM1ZmZmNDdiYTI5NWYyNDU4MmI0MmE4MWU3ODdiYzc2Y2ViYzc4NDkzYWUyOGZiZA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NWQxMzBhYjNlZTlhZTVjMzE0MTFlMzQ0ZmFmOTVhMjhjODhkZTRiOWZjMDg1NGNhMzM2ZTZhNGJiNzdjNjIxYQ==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NWY1YjZkMTBhM2U3ODUxZmU5NmZjMDk4Y2QzNWQ0NmY2NTAwZjQ5MGU4MDM2MGViYzJmNTlhMjA5NTg4MWZiNA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NjFhZjU3MjA2NWY5N2MyNDNlYzQ2OWU5NDcwZDg1YjAyYmM1N2NiZDU4NmIzMzk4ZTVhMGI4YjI4ODM0ZWY1OA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NzAxMWQyMGY1MzNjMWU0YTZmMTlmOTRlNzM1MjQ3MWEwNmUyNTQ1YmNlZjg3NWVhYzhkMWMzMTlmM2FjNDNkMA==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/NzFiNTllYWEzM2NkZTFlY2YyNDI5NGUxMzYyMDlhM2MxNmRiYTcxNDM1MDQyOTAyMjY2MDMyM2E3ZjNiMmMxNg==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/ODMxNDA5YmE4NDc3ZjVjNWY1NDFlZTFmZWI5Njk4OWFkZDkzMjZiNjI1MDlhNDUwNmJhYzU1MzhjYWExYWIyOQ==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/ODUzYTRhZGQxYzI3ZTRkNzNhYTk3NzdkNmEwZGE0NzYxODQ5NGE4NmVhY2MxMmJiMDhmNDQ2NGU5NDZiN2UzYw==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/YWVlNTFhMTllYmJiZWE4ZDk1M2Q3ZmM2OTE4MmQyMmUxMjVkZDZmNWVkNjUxZjBjMTAyNTE5NzBhOTEzYWEzNQ==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/ftoken/temp/YmE0MDg0NDY3NWExOTgwZmMwMDIyOWU1MWExNmQ3NGFmMjVmYzlmNzQxNWY5MzVkMTlmYWQ0NTFkYTU0ZTMwYw==" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/kernel/maps/Maps.php" afterDir="false" />
+    <list default="true" id="94103d3a-9ef7-43b7-89fc-04012b0d0ef5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kernel/ftoken/Token.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/kernel/ftoken/Token.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kernel/serial/Serial.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/kernel/serial/Serial.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kernel/serial/temp/SWRlbnRpZnk=" beforeDir="false" afterPath="$PROJECT_DIR$/src/kernel/serial/temp/SWRlbnRpZnk=" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kernel/validation/Validation.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/kernel/validation/Validation.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +14,7 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -87,13 +63,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="kernel" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="kernel" type="b2602c69:ProjectViewProjectNode" />
-              <item name="kernel" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="kernel" type="462c0819:PsiDirectoryNode" />
-              <item name="maps" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -131,7 +100,8 @@
       <updated>1556594521191</updated>
       <workItem from="1556594522357" duration="1661000" />
       <workItem from="1556596228331" duration="938000" />
-      <workItem from="1558929929851" duration="240000" />
+      <workItem from="1558929929851" duration="878000" />
+      <workItem from="1559715894397" duration="24000" />
     </task>
     <task id="LOCAL-00001" summary="V0.1 TEST">
       <created>1556595305495</created>
@@ -161,16 +131,30 @@
       <option name="project" value="LOCAL" />
       <updated>1558930000073</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="V0.1.1">
+      <created>1558930194021</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1558930194021</updated>
+    </task>
+    <task id="LOCAL-00006" summary="V0.1.1">
+      <created>1559715913474</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1559715913474</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2839000" />
+    <option name="totallyTimeSpent" value="3501000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25189108" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24962178" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -182,7 +166,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
-      <window_info anchor="bottom" id="Version Control" order="9" visible="true" weight="0.3289689" />
+      <window_info anchor="bottom" id="Version Control" order="9" visible="true" weight="0.31096563" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -217,9 +201,7 @@
     <entry file="file://$PROJECT_DIR$/vendor/composer/autoload_psr4.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/composer/installed.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/composer/installed.json" />
     <entry file="file://$PROJECT_DIR$/vendor/composer/autoload_namespaces.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>

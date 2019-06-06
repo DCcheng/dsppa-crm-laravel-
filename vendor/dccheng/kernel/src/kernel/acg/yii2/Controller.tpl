@@ -1,19 +1,19 @@
 namespace {{Namespace}};
 use Kernel\Validation\Validation;
 use Yii;
-use {{ModelNamespace}}\{{Model}};
+use {{modelNamespace}}\{{modelName}};
 use common\controllers\ApiBaseController;
 use common\vendor\db\VQuery;
 use common\vendor\widgets\AjaxLinkPager;
 use Exception;
 
-class {{Controller}} extends ApiBaseController
+class {{className}} extends ApiBaseController
 {
     public function actionGetlist()
     {
         try{
-            list($condition, $params, $arr, $page, $size) = {{Model}}::getParams();
-            $model = (new VQuery())->select("*")->from({{Model}}::tableName())->where($condition, $params);
+            list($condition, $params, $arr, $page, $size) = {{modelName}}::getParams();
+            $model = (new VQuery())->select("*")->from({{modelName}}::tableName())->where($condition, $params);
             $total = $model->count();
             $pageList = AjaxLinkPager::create($total, $size);
             $list = $model->offset(($page - 1) * $size)->limit($size)->orderBy("id desc")->all();
@@ -32,7 +32,7 @@ class {{Controller}} extends ApiBaseController
     public function actionAdd()
     {
         try {
-            $model = {{Model}}::addForData($_POST);
+            $model = {{modelName}}::addForData($_POST);
             outputJson(1, "添加{{*}}成功");
         } catch (Exception $e) {
             outputJson($e->getCode(), $e->getMessage());
@@ -46,7 +46,7 @@ class {{Controller}} extends ApiBaseController
             ["id", "required"],
             ["id", "number"]
             ]);
-            {{Model}}::updateForData($_POST["id"], $_POST);
+            {{modelName}}::updateForData($_POST["id"], $_POST);
             outputJson(1, "修改{{*}}成功");
         } catch (Exception $e) {
             outputJson($e->getCode(), $e->getMessage());
@@ -59,7 +59,7 @@ class {{Controller}} extends ApiBaseController
             Validation::validate($_POST, [
             ["ids", "required"]
             ]);
-            {{Model}}::deleteForIds($_POST["ids"]);
+            {{modelName}}::deleteForIds($_POST["ids"]);
             outputJson(1, "删除{{*}}成功");
         } catch (Exception $e) {
             outputJson($e->getCode(), $e->getMessage());
