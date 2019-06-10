@@ -50,6 +50,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('followup/add', 'App\Api\Controllers\V1\CustomFollowUpController@add');
         $api->post('followup/update', 'App\Api\Controllers\V1\CustomFollowUpController@update');
         $api->post('followup/delete', 'App\Api\Controllers\V1\CustomFollowUpController@delete');
+        $api->get('followup/getcount', 'App\Api\Controllers\V1\CustomFollowUpController@getcount');
 
         //4.客户联系人模块
         $api->get('contacts', 'App\Api\Controllers\V1\CustomContactsController@index');

@@ -6,18 +6,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/DCcheng/kernel.git",
-            "reference": "978b93247407213ad33a4c817023caf9c7fdeb32"
+            "reference": "1cba231b01046e3b5c727b0bf7bc473602144257"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/DCcheng/kernel/zipball/978b93247407213ad33a4c817023caf9c7fdeb32",
-            "reference": "978b93247407213ad33a4c817023caf9c7fdeb32",
+            "url": "https://api.github.com/repos/DCcheng/kernel/zipball/1cba231b01046e3b5c727b0bf7bc473602144257",
+            "reference": "1cba231b01046e3b5c727b0bf7bc473602144257",
             "shasum": ""
         },
         "require": {
             "php": ">=5.4"
         },
-        "time": "2019-06-06T06:51:25+00:00",
+        "time": "2019-06-06T07:18:39+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

@@ -19,7 +19,8 @@ use App\Api\Requests\ListRequest;
 use App\Models\CustomFollowUpRecord;
 use App\Models\CustomFollowUpFile;
 use App\Models\Category;
-use App\Models\Custom;
+use App\Models\Department;
+use App\Models\Member;
 use App\Models\Uploads;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -194,5 +195,42 @@ class CustomFollowUpController extends Controller
             DB::rollBack();
             return Response::fail($exception->getMessage());
         }
+    }
+
+    /**
+     * 3.6 - 获取客户跟进记录统计信息
+     * @param ListRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getcount(ListRequest $request)
+    {
+        list($condition, $params, $arr) = CustomFollowUpRecord::getCountParams($request);
+        $time = time();
+        $total = 0;
+        $model = DB::table(DB::raw(CustomFollowUpRecord::getTableName() . " as a"))->selectRaw("a.uid,b.truename,c.title as department_name,count(a.id) as total")
+            ->join(DB::raw(Member::getTableName() . " as b"), DB::raw("b.uid"), "=", DB::raw("a.uid"))
+            ->join(DB::raw(Department::getTableName() . " as c"), DB::raw("b.department_id"), "=", DB::raw("c.id"));
+        if ($condition != "") {
+            $model->whereRaw($condition, $params);
+        }
+        $list = $model->groupBy(DB::raw('a.uid,b.truename,c.title'))->orderByRaw("total desc,a.uid asc")->get();
+        $rowNum = 0;$prevTotal = 0;$prevNum = 1;
+        foreach ($list as $key => $value) {
+            $value = (array)$value;
+            $rowNum++;
+            if($key == 0 || $prevTotal != $value["total"]) {
+                $value["row_num"] = $rowNum;
+                $prevNum = $rowNum;
+            }else{
+                $value["row_num"] = $prevNum;
+            }
+            $value["key"] = $time . "_" . $value["uid"];
+            $total += (int)$value["total"];
+            $prevTotal = $value["total"];
+            $list[$key] = $value;
+        }
+        $arr['list'] = $list;
+        $arr["total"] = $total;
+        return Response::success(["data" => $arr]);
     }
 }

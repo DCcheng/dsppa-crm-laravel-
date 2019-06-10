@@ -13,6 +13,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\db\Schema;
 use yii\helpers\Inflector;
+use Exception;
 
 class AcgYii2
 {
@@ -46,14 +47,14 @@ class AcgYii2
 
             $this->setController();
             $this->setModel();
-        }catch (\Exception $exception){
+        }catch (Exception $exception){
             if(file_exists($this->getPath($this->controllerNamespace)."\\".$this->controllerName.".php")){
                 unlink($this->getPath($this->controllerNamespace)."\\".$this->controllerName.".php");
             }
             if(file_exists($this->getPath($this->modelNamespace)."\\".$this->modelName.".php")){
                 unlink($this->getPath($this->modelNamespace)."\\".$this->modelName.".php");
             }
-            throw new Exception($e->getMessage());
+            throw new Exception($exception->getMessage());
         }
     }
 
@@ -279,5 +280,6 @@ class AcgYii2
         $pathArr = explode("\\",Yii::getAlias("@common"));
         array_pop($pathArr);
         $path = implode("\\",$pathArr)."\\".$namespace;
+        return $path;
     }
 }

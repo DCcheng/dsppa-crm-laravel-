@@ -70,4 +70,51 @@ class CustomFollowUpRecord extends Model
         $condition = implode(" and ", $condition);
         return array($condition, $params, $arr, $page, $size);
     }
+
+    public static function getCountParams(ListRequest $request,$size = 15)
+    {
+        list(, $params, $arr) = parent::getParams($request,$size);
+        $condition = array();
+
+        $userInfo = config("webconfig.userInfo");
+        switch ($userInfo["data_authority"]) {
+            case "self":
+                $condition[] = "a.uid = ? and a.delete_time = 0";
+                $params[] = $userInfo['uid'];
+                break;
+            case "department":
+                $condition[] = "a.department_id = ? and a.delete_time = 0";
+                $params[] = $userInfo['department_id'];
+                break;
+            case "all":
+                $condition[] = "a.delete_time = 0";
+                break;
+            default:
+                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE ." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
+                break;
+        }
+
+        $cid = $request->get('cid', "");
+        if ($cid != "") {
+            $condition[] = "a.cid = ?";
+            $params[] = trim($cid);
+        }
+
+        //获取什么时间段后建立的客户跟进记录
+        $start_time = $request->get('start_time', "");
+        if ($start_time != "") {
+            $params[] = strtotime($start_time);
+            $condition[] = "a.create_time >= ?";
+        }
+
+        //获取什么时间段前建立的客户跟进记录
+        $end_time = $request->get('end_time', "");
+        if ($end_time != "") {
+            $params[] = strtotime($end_time);
+            $condition[] = "a.create_time <= ?";
+        }
+
+        $condition = implode(" and ", $condition);
+        return array($condition, $params, $arr);
+    }
 }

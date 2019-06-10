@@ -268,16 +268,24 @@ class CustomController extends Controller
         $total = 0;
         $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.uid,b.truename,c.title as department_name,count(a.id) as total")
             ->join(DB::raw(Member::getTableName() . " as b"), DB::raw("b.uid"), "=", DB::raw("a.uid"))
-            ->join(DB::raw(Department::getTableName() . " as c"), DB::raw("b.department_id"), "=", DB::raw("c.id"))
-            ->groupBy(DB::raw('a.uid,b.truename,c.title'));
+            ->join(DB::raw(Department::getTableName() . " as c"), DB::raw("b.department_id"), "=", DB::raw("c.id"));
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        $list = $model->get();
+        $list = $model->groupBy(DB::raw('a.uid,b.truename,c.title'))->orderByRaw("total desc,a.uid asc")->get();
+        $rowNum = 0;$prevTotal = 0;$prevNum = 1;
         foreach ($list as $key => $value) {
             $value = (array)$value;
+            $rowNum++;
+            if($key == 0 || $prevTotal != $value["total"]) {
+                $value["row_num"] = $rowNum;
+                $prevNum = $rowNum;
+            }else{
+                $value["row_num"] = $prevNum;
+            }
             $value["key"] = $time . "_" . $value["uid"];
             $total += (int)$value["total"];
+            $prevTotal = $value["total"];
             $list[$key] = $value;
         }
         $arr['list'] = $list;
