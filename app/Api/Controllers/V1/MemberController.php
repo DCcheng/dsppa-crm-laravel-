@@ -105,7 +105,7 @@ class MemberController extends Controller
             'password' => 'required|string',
             'o_password' => 'required|string'], [], ["id" => "用户ID", "password" => "新密码", "o_password" => "旧密码"]);
         $userInfo = config("webconfig.userInfo");
-        list("password" => $password) = Encrypt::start($request->get("o_password"), $userInfo['code']);
+        list($password) = Encrypt::start($request->get("o_password"), $userInfo['code']);
         if ($password == $userInfo["password"]) {
             Member::updateForData($request->get("id"), ["password" => $request->get("password")]);
             return Response::success();

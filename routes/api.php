@@ -65,6 +65,12 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('checkin/delete', 'App\Api\Controllers\V1\CheckInController@delete');
         $api->get('checkin/export', 'App\Api\Controllers\V1\CheckInController@export');
 
+        //6.知识库
+        $api->get('training', 'App\Api\Controllers\V1\TrainingFileController@index');
+        $api->post('training/add', 'App\Api\Controllers\V1\TrainingFileController@add');
+        $api->post('training/update', 'App\Api\Controllers\V1\TrainingFileController@update');
+        $api->post('training/delete', 'App\Api\Controllers\V1\TrainingFileController@delete');
+
         //7.分类接口
         $api->get('category', 'App\Api\Controllers\V1\CategoryController@index');
         $api->get('category/all', 'App\Api\Controllers\V1\CategoryController@all');
