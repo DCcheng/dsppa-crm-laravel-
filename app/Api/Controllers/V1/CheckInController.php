@@ -12,6 +12,7 @@ namespace App\Api\Controllers\V1;
 
 use App\Api\Controllers\Controller;
 use App\Api\Requests\CheckInRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Requests\IdsRequest;
@@ -19,6 +20,7 @@ use App\Api\Requests\ListRequest;
 use App\Models\Department;
 use App\Models\Member;
 use App\Models\CheckIn;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -134,6 +136,23 @@ class CheckInController extends Controller
             return Response::success(["data" => ["filename" => $filename]]);
         } catch (Exception $exception) {
             return Response::fail($exception->getMessage());
+        }
+    }
+
+    /**
+     * 5.6 - 获取考勤详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "考勤ID"]);
+        $model = Checkin::find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
         }
     }
 }

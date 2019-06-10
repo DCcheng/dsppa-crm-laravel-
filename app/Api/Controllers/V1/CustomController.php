@@ -9,6 +9,7 @@
 
 namespace App\Api\Controllers\V1;
 
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Controllers\Controller;
@@ -47,12 +48,13 @@ class CustomController extends Controller
         }
 
         $time = time();
-        $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.*");
+        $model = DB::table(DB::raw(Custom::getTableName() . " as a"))->selectRaw("a.id,identify,a.name,cid,level,province,city,area,address,intention,keyword,source,fax,longitude,latitude,discount,follow_up_time,a.create_time,b.name as contacts_name,b.phone")
+            ->join(DB::raw(CustomContacts::getTableName()." as b"),DB::raw("b.custom_id"),"=",DB::raw("a.id"))->distinct(DB::raw("a.id"));
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
         list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
-        $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
+        $list = $model->forPage($page, $size)->groupBy(DB::raw("a.id"))->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
             $value["key"] = $time . "_" . $value["id"];
@@ -318,5 +320,26 @@ class CustomController extends Controller
         }
         $arr['list'] = $list;
         return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 1.12 - 获取客户详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "客户ID"]);
+        $model = Custom::find($request->get("id"),["id","identify","name","cid","level","province","city","area","address","intention","keyword","source","fax","longitude","latitude","discount","follow_up_time","create_time"]);
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["follow_up_time"] = $this->toDateAgo($data['follow_up_time'], time());
+            $contactInfo = CustomContacts::whereRaw("custom_id = ? and delete_time = 0",[$data["id"]])->first(["name","phone"]);
+            $data["contacts_name"] = $contactInfo->name;
+            $data["phone"] = $contactInfo->phone;
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

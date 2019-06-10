@@ -18,6 +18,7 @@ use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Models\Uploads;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrainingFile;
 use Exception;
@@ -127,6 +128,23 @@ class TrainingFileController extends Controller
     {
         TrainingFile::deleteForIds($request->get("ids"));
         return Response::success();
+    }
+
+    /**
+     * 6.5 - 获取培训资料详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "培训资料ID"]);
+        $model = TrainingFile::find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }
 

@@ -44,6 +44,21 @@ class {{className}} extends Controller
     }
 
     /**
+    * @param Request $request
+    * @return \Illuminate\Http\JsonResponse
+    */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "ID"]);
+        $model = {{modelName}}::find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
+    }
+
+    /**
     * @param {{requestName}} $request
     * @return \Illuminate\Http\JsonResponse
     */

@@ -40,7 +40,7 @@ class Custom extends Model
     public static function getParams(ListRequest $request, $size = 15)
     {
         list(, $params, $arr, $page, $size) = parent::getParams($request, $size);
-        $condition = array();
+        $condition = array("b.delete_time = 0");
 
         //根据列表类型返回对应的数据
         //其中包含了客户列表、公海池、回收站

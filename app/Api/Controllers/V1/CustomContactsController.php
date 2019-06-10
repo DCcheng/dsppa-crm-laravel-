@@ -10,11 +10,13 @@
 namespace App\Api\Controllers\V1;
 
 use App\Api\Controllers\Controller;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Response;
 use App\Api\Requests\CustomContactsRequest;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
 use App\Models\CustomContacts;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CustomContactsController extends Controller
@@ -75,5 +77,22 @@ class CustomContactsController extends Controller
     {
         CustomContacts::deleteForIds($request->get("ids"));
         return Response::success();
+    }
+
+    /**
+     * 4.5 - 获取联系人详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "联系人ID"]);
+        $model = CustomContacts::find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

@@ -31,6 +31,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('customs/receive', 'App\Api\Controllers\V1\CustomController@receive');
         $api->get('customs/getcount', 'App\Api\Controllers\V1\CustomController@getcount');
         $api->get('customs/getlistforgps', 'App\Api\Controllers\V1\CustomController@getlistforgps');
+        $api->get('customs/show', 'App\Api\Controllers\V1\CustomController@show');
 
         //2.客户方案卡
         $api->get('scheme', 'App\Api\Controllers\V1\CustomSchemeController@index');
@@ -57,6 +58,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('contacts/add', 'App\Api\Controllers\V1\CustomContactsController@add');
         $api->post('contacts/update', 'App\Api\Controllers\V1\CustomContactsController@update');
         $api->post('contacts/delete', 'App\Api\Controllers\V1\CustomContactsController@delete');
+        $api->get('contacts/show', 'App\Api\Controllers\V1\CustomContactsController@show');
 
         //5.用户打卡考勤
         $api->get('checkin', 'App\Api\Controllers\V1\CheckInController@index');
@@ -64,12 +66,14 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('checkin/update', 'App\Api\Controllers\V1\CheckInController@update');
         $api->post('checkin/delete', 'App\Api\Controllers\V1\CheckInController@delete');
         $api->get('checkin/export', 'App\Api\Controllers\V1\CheckInController@export');
+        $api->get('checkin/show', 'App\Api\Controllers\V1\CheckInController@show');
 
         //6.知识库
         $api->get('training', 'App\Api\Controllers\V1\TrainingFileController@index');
         $api->post('training/add', 'App\Api\Controllers\V1\TrainingFileController@add');
         $api->post('training/update', 'App\Api\Controllers\V1\TrainingFileController@update');
         $api->post('training/delete', 'App\Api\Controllers\V1\TrainingFileController@delete');
+        $api->get('training/show', 'App\Api\Controllers\V1\TrainingFileController@show');
 
         //7.分类接口
         $api->get('category', 'App\Api\Controllers\V1\CategoryController@index');
@@ -78,6 +82,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('category/update', 'App\Api\Controllers\V1\CategoryController@update');
         $api->post('category/delete', 'App\Api\Controllers\V1\CategoryController@delete');
         $api->get('category/tree', 'App\Api\Controllers\V1\CategoryController@tree');
+        $api->get('category/show', 'App\Api\Controllers\V1\CategoryController@show');
 
         //8.日志接口
         $api->get('log', 'App\Api\Controllers\V1\LogController@index');
@@ -91,6 +96,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('access/update', 'App\Api\Controllers\V1\AccessController@update');
         $api->post('access/delete', 'App\Api\Controllers\V1\AccessController@delete');
         $api->get('access/tree', 'App\Api\Controllers\V1\AccessController@tree');
+        $api->get('access/show', 'App\Api\Controllers\V1\AccessController@show');
 
         //10.菜单接口
         $api->get('menu', 'App\Api\Controllers\V1\MenuController@index');
