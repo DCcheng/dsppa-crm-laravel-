@@ -121,7 +121,7 @@ class CategoryController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "分类ID"]);
-        $model = Category::find($request->get("id"));
+        $model = Category::where("delete_time",0)->find($request->get("id"));
         if($model){
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);

@@ -13,10 +13,12 @@ namespace App\Api\Controllers\V1;
 use App\Api\Controllers\Controller;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Models\Log;
 use App\Models\Member;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LogController extends Controller
@@ -42,5 +44,25 @@ class LogController extends Controller
         }
         $arr['list'] = $list;
         return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 8.2 - 获取日志详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "日志ID"]);
+        $model = Log::where("delete_time",0)->find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["params"] = json_decode($data["params"],true);
+            $data["datas"] = json_decode($data["datas"],true);
+            $data["responses_json"] = json_decode($data["responses_json"],true);
+            $data["create_time"] = $this->toDate(ceil($data["create_time"]/1000));
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

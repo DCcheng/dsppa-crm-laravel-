@@ -86,7 +86,7 @@ class CustomContactsController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "联系人ID"]);
-        $model = CustomContacts::find($request->get("id"));
+        $model = CustomContacts::where("delete_time",0)->find($request->get("id"));
         if($model){
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);

@@ -43,6 +43,7 @@ class TrainingFileController extends Controller
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
+            $value["create_time"] = $this->toDate($value["create_time"]);
             $list[$key] = $value;
         }
         $arr['list'] = $list;
@@ -137,7 +138,7 @@ class TrainingFileController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "培训资料ID"]);
-        $model = TrainingFile::find($request->get("id"));
+        $model = TrainingFile::where("delete_time",0)->find($request->get("id"));
         if($model){
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);

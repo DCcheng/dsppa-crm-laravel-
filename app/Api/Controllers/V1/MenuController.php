@@ -15,9 +15,11 @@ use App\Api\Requests\AccessRequest;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
 use App\Api\Requests\MenuRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Models\Menu;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
@@ -102,5 +104,22 @@ class MenuController extends Controller
             $list[$key] = $value;
         }
         return Response::success(["data"=>$list]);
+    }
+
+    /**
+     * 10.7 - 获取菜单详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "菜单ID"]);
+        $model = Menu::where("delete_time",0)->find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

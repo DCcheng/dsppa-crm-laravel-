@@ -14,6 +14,7 @@ use App\Api\Controllers\Controller;
 use App\Api\Requests\DepartmentRequest;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Models\Custom;
@@ -146,5 +147,22 @@ class DepartmentController extends Controller
         $orderRaw = "sort asc,id";
         $arr['list'] = DB::table(DB::raw(Department::getTableName()))->selectRaw("id,title,sort")->whereRaw($condition, $params)->orderByRaw($orderRaw)->get();
         return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 12.8 - 获取部门详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "部门ID"]);
+        $model = Department::where("delete_time",0)->find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

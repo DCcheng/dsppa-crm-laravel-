@@ -97,7 +97,7 @@ class AccessController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "访问节点ID"]);
-        $model = Access::find($request->get("id"));
+        $model = Access::where("delete_time",0)->find($request->get("id"));
         if($model){
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);

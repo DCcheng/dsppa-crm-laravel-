@@ -44,6 +44,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('schemelist/add', 'App\Api\Controllers\V1\CustomSchemeListController@add');
         $api->post('schemelist/update', 'App\Api\Controllers\V1\CustomSchemeListController@update');
         $api->post('schemelist/delete', 'App\Api\Controllers\V1\CustomSchemeListController@delete');
+        $api->get('scheme/show', 'App\Api\Controllers\V1\CustomSchemeController@show');
 
         //3.客户根据
         $api->get('followup', 'App\Api\Controllers\V1\CustomFollowUpController@index');
@@ -52,6 +53,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('followup/update', 'App\Api\Controllers\V1\CustomFollowUpController@update');
         $api->post('followup/delete', 'App\Api\Controllers\V1\CustomFollowUpController@delete');
         $api->get('followup/getcount', 'App\Api\Controllers\V1\CustomFollowUpController@getcount');
+        $api->get('followup/show', 'App\Api\Controllers\V1\CustomFollowUpController@show');
 
         //4.客户联系人模块
         $api->get('contacts', 'App\Api\Controllers\V1\CustomContactsController@index');
@@ -89,6 +91,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('log/add', 'App\Api\Controllers\V1\LogController@add');
         $api->post('log/update', 'App\Api\Controllers\V1\LogController@update');
         $api->post('log/delete', 'App\Api\Controllers\V1\LogController@delete');
+        $api->get('log/show', 'App\Api\Controllers\V1\LogController@show');
 
         //9.功能访问节点接口
         $api->get('access', 'App\Api\Controllers\V1\AccessController@index');
@@ -105,6 +108,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->post('menu/delete', 'App\Api\Controllers\V1\MenuController@delete');
         $api->get('menu/tree', 'App\Api\Controllers\V1\MenuController@tree');
         $api->get('menu/leftmenu', 'App\Api\Controllers\V1\MenuController@leftmenu');
+        $api->get('menu/show', 'App\Api\Controllers\V1\MenuController@show');
 
         //11.角色接口
         $api->get('role', 'App\Api\Controllers\V1\RoleController@index');
@@ -123,6 +127,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->get('department/tree', 'App\Api\Controllers\V1\DepartmentController@tree');
         $api->post('department/transfer','App\Api\Controllers\V1\DepartmentController@transfer');
         $api->get('department/all', 'App\Api\Controllers\V1\DepartmentController@all');
+        $api->get('department/show', 'App\Api\Controllers\V1\DepartmentController@show');
 
         //13.用户接口
         $api->get('member', 'App\Api\Controllers\V1\MemberController@index');

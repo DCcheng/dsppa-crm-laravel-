@@ -12,6 +12,7 @@ namespace App\Api\Controllers\V1;
 
 use App\Api\Controllers\Controller;
 use App\Api\Requests\CustomFollowUpRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Requests\IdsRequest;
@@ -22,6 +23,7 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Models\Member;
 use App\Models\Uploads;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -232,5 +234,22 @@ class CustomFollowUpController extends Controller
         $arr['list'] = $list;
         $arr["total"] = $total;
         return Response::success(["data" => $arr]);
+    }
+
+    /**
+     * 3.7 - 获取跟进记录详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "跟进记录ID"]);
+        $model = CustomFollowUpRecord::where("delete_time",0)->find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

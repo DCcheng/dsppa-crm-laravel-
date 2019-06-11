@@ -329,7 +329,7 @@ class CustomController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "客户ID"]);
-        $model = Custom::find($request->get("id"),["id","identify","name","cid","level","province","city","area","address","intention","keyword","source","fax","longitude","latitude","discount","follow_up_time","create_time"]);
+        $model = Custom::where("delete_time",0)->find($request->get("id"),["id","identify","name","cid","level","province","city","area","address","intention","keyword","source","fax","longitude","latitude","discount","follow_up_time","create_time"]);
         if($model){
             $data = (array)$model["attributes"];
             $data["follow_up_time"] = $this->toDateAgo($data['follow_up_time'], time());

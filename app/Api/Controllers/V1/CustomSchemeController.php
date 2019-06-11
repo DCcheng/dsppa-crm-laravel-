@@ -11,12 +11,15 @@
 namespace App\Api\Controllers\V1;
 
 use App\Api\Requests\CustomSchemeRequest;
+use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
 use App\Api\Controllers\Controller;
 use App\Api\Requests\IdsRequest;
 use App\Api\Requests\ListRequest;
 use App\Models\CustomScheme;
+use App\Models\CustomSchemeList;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CustomSchemeController extends Controller
@@ -79,5 +82,23 @@ class CustomSchemeController extends Controller
     public function delete(IdsRequest $request){
         CustomScheme::deleteForIds($request->get("ids"));
         return Response::success();
+    }
+
+    /**
+     * 2.12 - 获取方案卡详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "方案卡ID"]);
+        $model = CustomScheme::where("delete_time",0)->find($request->get("id"));
+        if($model){
+            $data = (array)$model["attributes"];
+            $data["create_time"] = $this->toDate($data["create_time"]);
+            $data["list"] = CustomSchemeList::whereRaw("scheme_id = ? and delete_time = 0",[$data["id"]])->get();
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
     }
 }

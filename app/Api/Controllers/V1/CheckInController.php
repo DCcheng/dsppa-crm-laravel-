@@ -146,7 +146,7 @@ class CheckInController extends Controller
      */
     public function show(Request $request){
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "考勤ID"]);
-        $model = Checkin::find($request->get("id"));
+        $model = Checkin::where("delete_time",0)->find($request->get("id"));
         if($model){
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);
