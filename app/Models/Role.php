@@ -13,9 +13,9 @@ namespace App\Models;
 use App\Api\Requests\ListRequest;
 use App\Api\Utils\Response;
 use App\Models\Model;
-use Kernel\Ftoken\Token;
 use Kernel\Ftoken\TokenConstant;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Kernel\Kernel;
 
 class Role extends Model
 {
@@ -35,7 +35,8 @@ class Role extends Model
         $model = parent::updateForData($id, $data);
         $userInfo = config("webconfig.userInfo");
         if ($model && $id == $userInfo["role_id"]) {
-            Token::invalidate();
+            $kernel = Kernel::init();
+            $kernel->token->invalidate();
             throw new HttpResponseException(Response::fail(TokenConstant::TOKEN_EXPIRE_MESSAGE,401));
         }
     }

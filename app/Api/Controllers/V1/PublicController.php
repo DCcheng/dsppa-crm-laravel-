@@ -16,7 +16,6 @@ use App\Api\Utils\Log;
 use App\Api\Utils\Response;
 use App\Models\Member;
 use Illuminate\Http\Request;
-use Kernel\Ftoken\Token;
 use App\Models\Uploads;
 use Exception;
 
@@ -33,7 +32,7 @@ class PublicController extends Controller
             $this->validate($request, ["username" => "", "password"], [], ["username" => "用户名", "password" => "密码"]);
             $userInfo = Member::login($request);
             config(["webconfig.userInfo" => $userInfo]);
-            list($token, $exp) = Token::create($userInfo);
+            list($token, $exp) = $this->kernel->token->create($userInfo);
             Log::create($request);
             return Response::success(["data" => ["token" => $token, "exp" => $exp]]);
         } catch (Exception $exception) {
@@ -48,7 +47,7 @@ class PublicController extends Controller
     public function logout()
     {
         try {
-            Token::invalidate();
+            $this->kernel->token->invalidate();
             return Response::success();
         } catch (Exception $exception) {
             return Response::fail($exception->getMessage());

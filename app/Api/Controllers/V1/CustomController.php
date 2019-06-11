@@ -25,7 +25,6 @@ use App\Api\Utils\ReadFile;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Kernel\serial\Serial;
 use Exception;
 
 class CustomController extends Controller
@@ -93,7 +92,7 @@ class CustomController extends Controller
             try {
                 foreach ($data as $key => $value) {
                     $row++;
-                    $serial = new Serial();
+                    $serial = $this->kernel->serial;
                     $contactsData = [
                         "person_name" => $value["person_name"],
                         "phone" => $value["phone"],
@@ -133,7 +132,7 @@ class CustomController extends Controller
      */
     public function add(CustomRequest $request)
     {
-        $serial = new Serial();
+        $serial = $this->kernel->serial;
         $contactsData = [
             "person_name" => $request->get("person_name"),
             "phone" => $request->get("phone"),

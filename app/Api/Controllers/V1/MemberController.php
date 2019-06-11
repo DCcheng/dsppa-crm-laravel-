@@ -178,4 +178,20 @@ class MemberController extends Controller
             return Response::fail($exception->getCode() . " - " . $exception->getMessage());
         }
     }
+
+    /**
+     * 13.11 - 获取用户详情
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request){
+        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "用户ID"]);
+        $model = Member::where("delete_time",0)->find($request->get("id"),["uid","truename","phone","attence_num","post"]);
+        if($model){
+            $data = (array)$model["attributes"];
+            return Response::success(["data"=>$data]);
+        }else{
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
+    }
 }

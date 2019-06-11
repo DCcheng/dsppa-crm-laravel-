@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Kernel\acg\AcgFactory;
 use Kernel\acg\AcgLaravel;
+use Kernel\Kernel;
 
 class AcgCommand extends Command
 {
@@ -42,8 +43,8 @@ class AcgCommand extends Command
     public function handle()
     {
         $table = $this->argument('table');
-        AcgFactory::run();
-        AcgFactory::$app->laravel->run([
+        $kernel = Kernel::init();
+        $kernel->acg->run([
             "Table"=>$table,
             "controllerNamespace"=>"App\\Api\\Controllers\\V1",
             "modelNamespace"=>"App\\Models",

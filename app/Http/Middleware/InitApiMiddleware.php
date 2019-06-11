@@ -6,8 +6,7 @@ use App\Api\Utils\Constant;
 use App\Api\Utils\Log;
 use App\Api\Utils\Response;
 use Closure;
-use Kernel\Ftoken\Token;
-use Kernel\Ftoken\TokenException;
+use Kernel\Kernel;
 
 class InitApiMiddleware
 {
@@ -21,7 +20,8 @@ class InitApiMiddleware
     public function handle($request, Closure $next)
     {
         try {
-            $userInfo = Token::validate();
+            $kernel = Kernel::init();
+            $userInfo = $kernel->token->validate();
             config(["webconfig.userInfo" => $userInfo]);
             Log::create($request);
             $actionName = explode("\\", $request->route()->getActionName());
@@ -31,7 +31,7 @@ class InitApiMiddleware
 //                return Response::fail(Constant::SYSTEM_NO_ACTION_AUTHORITY_CODE . " - " . Constant::SYSTEM_NO_ACTION_AUTHORITY_MESSAGE, 403);
 //            }
             return $next($request);
-        } catch (TokenException $exception) {
+        } catch (\Exception $exception) {
             return Response::fail($exception->getCode() . " - " . $exception->getMessage(), 401);
         }
     }

@@ -15,7 +15,7 @@ use App\Api\Utils\Response;
 use App\Api\Requests\ListRequest;
 use App\Models\Model;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Kernel\Maps\Maps;
+use Kernel\Kernel;
 
 class Custom extends Model
 {
@@ -23,11 +23,12 @@ class Custom extends Model
 
     public static function addAttributes($model)
     {
+        $kernel = Kernel::init();
         $userInfo = config("webconfig.userInfo");
         $model->uid = $userInfo["uid"];
         $model->department_id = $userInfo["department_id"];
         $model->in_high_seas = 0;
-        list($model->longitude, $model->latitude) = Maps::getGps($model->address, $model->city);
+        list($model->longitude, $model->latitude) = $kernel->maps->getGps($model->address, $model->city);
         $time = time();
         $model->cid = (int)$model->cid;
         $model->discount = (int)$model->discount;
