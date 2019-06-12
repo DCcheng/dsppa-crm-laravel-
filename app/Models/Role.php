@@ -35,7 +35,7 @@ class Role extends Model
         $model = parent::updateForData($id, $data);
         $userInfo = config("webconfig.userInfo");
         if ($model && $id == $userInfo["role_id"]) {
-            Kernel::$app->token->invalidate();
+            Kernel::token()->invalidate();
             throw new HttpResponseException(Response::fail(TokenConstant::TOKEN_EXPIRE_MESSAGE,401));
         }
     }

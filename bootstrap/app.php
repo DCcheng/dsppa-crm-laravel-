@@ -11,7 +11,7 @@
 |
 */
 //初始化dccheng/kernel插件
-//\Kernel\Kernel::init();
+\Kernel\Kernel::init();
 
 $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')

@@ -27,7 +27,7 @@ class Custom extends Model
         $model->uid = $userInfo["uid"];
         $model->department_id = $userInfo["department_id"];
         $model->in_high_seas = 0;
-        list($model->longitude, $model->latitude) = Kernel::$app->maps->getGps($model->address, $model->city);
+        list($model->longitude, $model->latitude) = Kernel::maps()->getGps($model->address, $model->city);
         $time = time();
         $model->cid = (int)$model->cid;
         $model->discount = (int)$model->discount;

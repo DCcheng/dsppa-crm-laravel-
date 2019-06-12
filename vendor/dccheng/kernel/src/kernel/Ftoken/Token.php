@@ -128,8 +128,9 @@ class Token
      * @return [array]        [接口返回数据，ret：状态字段，0-失败，1-成功。msg：操作返回信息描述。data：包含的数据]
      */
     public function refresh(){
+        $info = $this->validateToken();
         unlink($this->file);
-        return $this->createToken($this->userInfoArr);
+        return $this->createToken($info);
     }
 
     /**

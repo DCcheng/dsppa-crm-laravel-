@@ -93,7 +93,7 @@ class CustomController extends Controller
             try {
                 foreach ($data as $key => $value) {
                     $row++;
-                    $serial = Kernel::$app->serial;
+                    $serial = Kernel::serial();
                     $contactsData = [
                         "person_name" => $value["person_name"],
                         "phone" => $value["phone"],
@@ -133,7 +133,7 @@ class CustomController extends Controller
      */
     public function add(CustomRequest $request)
     {
-        $serial = Kernel::$app->serial;
+        $serial = Kernel::serial();
         $contactsData = [
             "person_name" => $request->get("person_name"),
             "phone" => $request->get("phone"),

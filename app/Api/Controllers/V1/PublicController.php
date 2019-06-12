@@ -33,7 +33,7 @@ class PublicController extends Controller
             $this->validate($request, ["username" => "", "password"], [], ["username" => "用户名", "password" => "密码"]);
             $userInfo = Member::login($request);
             config(["webconfig.userInfo" => $userInfo]);
-            list($token, $exp) = Kernel::$app->token->create($userInfo);
+            list($token, $exp) = Kernel::token()->create($userInfo);
             Log::create($request);
             return Response::success(["data" => ["token" => $token, "exp" => $exp]]);
         } catch (Exception $exception) {
@@ -48,8 +48,23 @@ class PublicController extends Controller
     public function logout()
     {
         try {
-            Kernel::$app->token->invalidate();
+            Kernel::token()->invalidate();
             return Response::success();
+        } catch (Exception $exception) {
+            return Response::fail($exception->getMessage());
+        }
+    }
+
+    /**
+     * 13.12 - 用户刷新令牌
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refreshToken(Request $request)
+    {
+        try {
+            list($token, $exp) = Kernel::token()->refresh();
+            return Response::success(["data" => ["token" => $token, "exp" => $exp]]);
         } catch (Exception $exception) {
             return Response::fail($exception->getMessage());
         }

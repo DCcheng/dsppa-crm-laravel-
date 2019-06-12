@@ -140,6 +140,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         $api->get("member/departmentall", 'App\Api\Controllers\V1\MemberController@departmentall');
         $api->post('member/transferdata', 'App\Api\Controllers\V1\MemberController@transferData');
         $api->get('member/show', 'App\Api\Controllers\V1\MemberController@show');
+        $api->post('public/refreshtoken', 'App\Api\Controllers\V1\PublicController@refreshToken');
 
         //14.文件管理
         $api->post("public/uploadfile", 'App\Api\Controllers\V1\PublicController@uploadfile');
