@@ -5,6 +5,10 @@
  *  Author: DC
  *  Date: 2019/6/11
  *  Time: 12:02
+ *
+ * You must use 'Kernel::init()' in the project bootstrap to initialize this program
+ * If you have not initialize this program , you will get a error message "Trying to get property of non-object"
+ * 
  */
 
 
@@ -15,6 +19,8 @@ use Kernel\Container;
 class Kernel
 {
     public $container;
+
+    public static $app = null;
 
     public function __construct(Container $container,$arr = [])
     {
@@ -29,10 +35,20 @@ class Kernel
         }
     }
 
+//    public function __get($name)
+//    {
+//        if(is_null(self::$app)){
+//           throw new Exception("Please initialize the kernel program and you can use 'Kernel::init()' to initialize the program");
+//        }
+//        return $this->$name;
+//    }
+
     public static function init($arr = [])
     {
-        $kerenl = new Kernel(new Container(),$arr);
-        return $kerenl;
+        if(is_null(self::$app)) {
+            self::$app = new Kernel(new Container(), $arr);
+        }
+        return self::$app;
     }
 
     public function setClass()

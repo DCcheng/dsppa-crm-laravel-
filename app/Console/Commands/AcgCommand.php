@@ -43,12 +43,11 @@ class AcgCommand extends Command
     public function handle()
     {
         $table = $this->argument('table');
-        $kernel = Kernel::init();
-        $kernel->acg->run([
+        Kernel::$app->acg->run([
             "Table"=>$table,
-            "controllerNamespace"=>"App\\Api\\Controllers\\V1",
-            "modelNamespace"=>"App\\Models",
-            "requestNamespace"=>"App\\Api\\Requests",
+            "controllerNamespace"=>"App\\App2\\Api\\Controllers\\V1",
+            "modelNamespace"=>"App\\App2\\Models",
+            "requestNamespace"=>"App\\App2\\Api\\Requests",
         ]);
     }
 }

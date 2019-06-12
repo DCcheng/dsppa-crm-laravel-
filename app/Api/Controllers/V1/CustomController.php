@@ -26,6 +26,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Exception;
+use Kernel\Kernel;
 
 class CustomController extends Controller
 {
@@ -92,7 +93,7 @@ class CustomController extends Controller
             try {
                 foreach ($data as $key => $value) {
                     $row++;
-                    $serial = $this->kernel->serial;
+                    $serial = Kernel::$app->serial;
                     $contactsData = [
                         "person_name" => $value["person_name"],
                         "phone" => $value["phone"],
@@ -132,7 +133,7 @@ class CustomController extends Controller
      */
     public function add(CustomRequest $request)
     {
-        $serial = $this->kernel->serial;
+        $serial = Kernel::$app->serial;
         $contactsData = [
             "person_name" => $request->get("person_name"),
             "phone" => $request->get("phone"),

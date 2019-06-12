@@ -18,6 +18,7 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Models\Uploads;
 use Exception;
+use Kernel\Kernel;
 
 class PublicController extends Controller
 {
@@ -32,7 +33,7 @@ class PublicController extends Controller
             $this->validate($request, ["username" => "", "password"], [], ["username" => "用户名", "password" => "密码"]);
             $userInfo = Member::login($request);
             config(["webconfig.userInfo" => $userInfo]);
-            list($token, $exp) = $this->kernel->token->create($userInfo);
+            list($token, $exp) = Kernel::$app->token->create($userInfo);
             Log::create($request);
             return Response::success(["data" => ["token" => $token, "exp" => $exp]]);
         } catch (Exception $exception) {
@@ -47,7 +48,7 @@ class PublicController extends Controller
     public function logout()
     {
         try {
-            $this->kernel->token->invalidate();
+            Kernel::$app->token->invalidate();
             return Response::success();
         } catch (Exception $exception) {
             return Response::fail($exception->getMessage());

@@ -20,8 +20,7 @@ class InitApiMiddleware
     public function handle($request, Closure $next)
     {
         try {
-            $kernel = Kernel::init();
-            $userInfo = $kernel->token->validate();
+            $userInfo = Kernel::$app->token->validate();
             config(["webconfig.userInfo" => $userInfo]);
             Log::create($request);
             $actionName = explode("\\", $request->route()->getActionName());

@@ -10,6 +10,8 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+//初始化dccheng/kernel插件
+//\Kernel\Kernel::init();
 
 $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')
