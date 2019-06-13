@@ -92,15 +92,21 @@ class MenuController extends Controller
 
     /**
      * 10.6 - 获取第一二级访问菜单(根据用户权限划分)
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function leftmenu(){
+    public function leftmenu(Request $request){
+        $this->validate($request, ['type' => 'required|string'], [], ["id" => "菜单类型"]);
         $userInfo = config("webconfig.userInfo");
+        $type = $request->get("type","");
+        if(!isset($userInfo["menu"][$type])){
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+        }
         $ids = implode(",", $userInfo["menu"]);
-        $list = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1", [0]);
+        $list = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1 and delete_time = 0", [0]);
         foreach ($list as $key => $value) {
             $value = (array)$value;
-            $value["childrenList"] = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1", [$value["id"]]);
+            $value["childrenList"] = Menu::getChildrenList("pid = ? and id in ($ids)  and status = 1 and delete_time = 0", [$value["id"]]);
             $list[$key] = $value;
         }
         return Response::success(["data"=>$list]);

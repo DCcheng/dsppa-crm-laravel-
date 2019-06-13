@@ -20,13 +20,21 @@ use Kernel\Kernel;
 class Role extends Model
 {
     protected $table = "role";
+    static $mergeMenuArr = ["frontend"=>[],"backend"=>[]];
 
     public static function addAttributes($model)
     {
         $model->data_authority = "self";
-        $model->access = serialize(explode(",", $model->access));
-        $model->menu = serialize(explode(",", $model->menu));
+        $model->access = serialize($model->access);
+        $model->menu = serialize(array_merge(self::$mergeMenuArr,$model->menu));
         $model->create_time = time();
+        return $model;
+    }
+
+    public static function editAttributes($model)
+    {
+        $model->access = is_array($model->access)?serialize($model->access):$model->access;
+        $model->menu = is_array($model->menu)?serialize(array_merge(self::$mergeMenuArr,$model->menu)):$model->menu;
         return $model;
     }
 

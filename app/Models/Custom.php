@@ -45,6 +45,7 @@ class Custom extends Model
         //根据列表类型返回对应的数据
         //其中包含了客户列表、公海池、回收站
         //在客户列表中也根据访问用户的数据权限分为了，自己、部门和所有
+
         $type = $request->get('type', "");
         $userInfo = config("webconfig.userInfo");
         switch ($type) {
@@ -84,6 +85,13 @@ class Custom extends Model
             $condition[] = "(a.name like ? or a.identify like ?)";
             $params[] = trim($keyword) . "%";
             $params[] = trim($keyword) . "%";
+        }
+
+        //根据部门ID过滤数据
+        $department_id = $request->get('department_id', "all");
+        if(($type == "list" && $userInfo["data_authority"] != "department" && $department_id != "all") || ($type == "trash")){
+            $condition[] = "a.department_id = ?";
+            $params[] = $department_id;
         }
 
         //获取公司名以及编号中包含对应关键字的客户档案
@@ -149,8 +157,9 @@ class Custom extends Model
         $userInfo = config("webconfig.userInfo");
         switch ($userInfo["data_authority"]) {
             case "self":
-                $condition[] = "a.uid = ? and a.in_high_seas = 0 and a.delete_time = 0";
+                $condition[] = "a.uid = ? and a.department_id = ? and a.in_high_seas = 0 and a.delete_time = 0";
                 $params[] = $userInfo['uid'];
+                $params[] = $userInfo['department_id'];
                 break;
             case "department":
                 $condition[] = "a.department_id = ? and a.in_high_seas = 0 and a.delete_time = 0";

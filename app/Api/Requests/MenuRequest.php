@@ -9,6 +9,7 @@
 
 
 namespace App\Api\Requests;
+
 use App\Api\Requests\BaseRequest;
 
 class MenuRequest extends BaseRequest
@@ -24,10 +25,11 @@ class MenuRequest extends BaseRequest
     {
         return [
             'pid' => 'required|integer',
+            'type' => 'required|string|max:255',
             'title' => 'required|string|max:50',
-            'url'=>'required|string|max:255',
-            'icon'=>'string|max:255',
-            'tip'=>'string|max:255',
+            'url' => 'required|string|max:255',
+            'icon' => 'string|max:255',
+            'tip' => 'string|max:255',
             'sort' => 'required|integer',
             'status' => 'required|integer'
         ];
@@ -37,6 +39,7 @@ class MenuRequest extends BaseRequest
     {
         return [
             'pid' => '父级菜单ID',
+            'type' => '菜单类型',
             'title' => '菜单标题',
             'url' => '访问路径',
             'icon' => '标签',
