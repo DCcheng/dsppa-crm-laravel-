@@ -10,8 +10,8 @@
 
 namespace App\Api\Requests;
 
-
-class MemberRequest
+use App\Api\Requests\BaseRequest;
+class MemberRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

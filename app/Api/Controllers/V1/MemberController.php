@@ -66,8 +66,21 @@ class MemberController extends Controller
      */
     public function add(MemberRequest $request)
     {
-        Member::addForData($request->all());
-        return Response::success();
+        $memberAccessData = [
+            "role_id" => $request->get("role_id")
+        ];
+        $data = array_diff_key($request->all(), $memberAccessData);
+        DB::beginTransaction();
+        try {
+            $memberInfo = Member::addForData($data);
+            $memberAccessData["uid"] = $memberInfo["uid"];
+            MemberAccess::addForData($memberAccessData);
+            DB::commit();
+            return Response::success();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return Response::fail($exception->getMessage());
+        }
     }
 
     /**
@@ -77,9 +90,24 @@ class MemberController extends Controller
      */
     public function update(MemberRequest $request)
     {
-        $this->validate($request, ['id' => 'required|integer'], [], ["id" => "用户ID"]);
-        Member::updateForData($request->get("id"), $request->all());
-        return Response::success();
+        $this->validate($request, ['id' => 'required|integer', 'role_id' => "integer"], [], ["id" => "用户ID", "role_id" => "角色ID"]);
+        $role_id = $request->get("role_id", "");
+        $memberAccessData = [
+            "role_id" => $role_id
+        ];
+        $data = array_diff_key($request->all(), $memberAccessData);
+        DB::beginTransaction();
+        try {
+            Member::updateForData($request->get("id"), $data);
+            if ($role_id != "") {
+                MemberAccess::where("uid", $request->get("id"))->update($memberAccessData);
+            }
+            DB::commit();
+            return Response::success();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return Response::fail($exception->getMessage());
+        }
     }
 
     /**
@@ -129,9 +157,9 @@ class MemberController extends Controller
         $department_id = $request->get("department_id");
         DB::beginTransaction();
         try {
-            Member::where("uid",$uid)->update(["department_id" => $department_id]);
-            Custom::where("uid",$uid)->update(["department_id" => $department_id]);
-            CustomFollowUpRecord::where("uid",$uid)->update(["department_id" => $department_id]);
+            Member::where("uid", $uid)->update(["department_id" => $department_id]);
+            Custom::where("uid", $uid)->update(["department_id" => $department_id]);
+            CustomFollowUpRecord::where("uid", $uid)->update(["department_id" => $department_id]);
             DB::commit();
             return Response::success();
         } catch (Exception $exception) {
@@ -148,7 +176,7 @@ class MemberController extends Controller
     public function departmentall(Request $request)
     {
         $this->validate($request, ['department_id' => 'required|integer'], [], ["department_id" => "部门ID"]);
-        $list = Member::selectRaw("uid,truename")->where("department_id", $request->get("department_id"))->where("delete_time",0)->get();
+        $list = Member::selectRaw("uid,truename")->where("department_id", $request->get("department_id"))->where("delete_time", 0)->get();
         return Response::success(["data" => $list]);
     }
 
@@ -169,8 +197,8 @@ class MemberController extends Controller
             $from_uid = (int)$request->get("from_uid");
             $to_uid = $request->get("to_uid");
             $toMemberInfo = Member::find($to_uid);
-            Custom::whereRaw("uid = ?", [$from_uid])->update(["uid"=>$toMemberInfo->uid,"department_id" => $toMemberInfo->department_id]);
-            CustomFollowUpRecord::whereRaw("uid = ?", [$from_uid])->update(["uid"=>$toMemberInfo->uid,"department_id" => $toMemberInfo->department_id]);
+            Custom::whereRaw("uid = ?", [$from_uid])->update(["uid" => $toMemberInfo->uid, "department_id" => $toMemberInfo->department_id]);
+            CustomFollowUpRecord::whereRaw("uid = ?", [$from_uid])->update(["uid" => $toMemberInfo->uid, "department_id" => $toMemberInfo->department_id]);
             DB::commit();
             return Response::success();
         } catch (Exception $exception) {
@@ -184,14 +212,15 @@ class MemberController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "用户ID"]);
-        $model = Member::where("delete_time",0)->find($request->get("id"),["uid","truename","phone","attence_num","post"]);
-        if($model){
+        $model = Member::where("delete_time", 0)->find($request->get("id"), ["uid", "truename", "phone", "attence_num", "post"]);
+        if ($model) {
             $data = (array)$model["attributes"];
-            return Response::success(["data"=>$data]);
-        }else{
-            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+            return Response::success(["data" => $data]);
+        } else {
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
         }
     }
 }

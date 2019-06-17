@@ -30,8 +30,8 @@ class PublicController extends Controller
     public function login(Request $request)
     {
         try {
-            $this->validate($request, ["username" => "", "password"], [], ["username" => "用户名", "password" => "密码"]);
-            $userInfo = Member::login($request);
+            $this->validate($request, ["username" => "required", "password" => "required"], [], ["username" => "用户名", "password" => "密码"]);
+            $userInfo = Member::loginByPassword($request);
             config(["webconfig.userInfo" => $userInfo]);
             list($token, $exp) = Kernel::token()->create($userInfo);
             Log::create($request);

@@ -17,6 +17,11 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version(['v1', 'v2', 'v3'], function ($api) {
     $api->group(['prefix' => 'v1'], function () use ($api) {
         $api->post("public/login", 'App\Api\Controllers\V1\PublicController@login');
+
+        //15.微信专用接口
+        $api->post('wechat/login', 'App\Api\Controllers\V1\WechatController@login');
+        $api->post('wechat/bind', 'App\Api\Controllers\V1\WechatController@bind');
+        $api->post('wechat/register', 'App\Api\Controllers\V1\WechatController@register');
     });
     $api->group(['middleware' => ['initApi'],'prefix' => 'v1'], function () use ($api) {
         //1.客户管理模块
@@ -145,6 +150,7 @@ $api->version(['v1', 'v2', 'v3'], function ($api) {
         //14.文件管理
         $api->post("public/uploadfile", 'App\Api\Controllers\V1\PublicController@uploadfile');
         $api->get("public/cleanfile", 'App\Api\Controllers\V1\PublicController@cleanfile');
+
     });
 
     $api->group(['prefix' => 'v3'], function () use ($api) {
