@@ -33,6 +33,9 @@ class WechatController extends Controller
         $curl = Kernel::curl();
         $curl->ssl = true;
         $curl_result = json_decode($curl->get($url));
+        if(empty($curl_result)) {
+            return Response::fail("获取session_key及openID时异常，微信内部错误");
+        }
         if(isset($curl_result->openid)){
             $model = Member::whereRaw("openid = ? and status = 1 and delete_time = 0", [$curl_result->openid])->first();
             if($model){
@@ -46,7 +49,7 @@ class WechatController extends Controller
             }
             return Response::success($result);
         }else{
-            return Response::fail("Code 参数错误，获取用户信息失败");
+            return Response::fail("请求错误，微信内部错误码[".$curl_result->errcode."]");
         }
     }
 
