@@ -22,19 +22,19 @@ use Kernel\Kernel;
 
 class WechatController extends Controller
 {
-    public $appid = "wx38c75d790f0e67fa";
-    public $appsecret = "d3536c87aa698f7937b666f117cb0a2e";
+    public $appid = "wxba569217a731ca22";
+    public $appsecret = "aef14ef6a0745427bbdd1bf19b291623";
 
     //根据传入的code获取OPENID，数据库中存在数据自动登录
     public function login(Request $request)
     {
-        $code = $request->get("code","033M4sim0zk0ir1K37jm03avim0M4sib");
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$this->appid."&secret=".$this->appsecret."&code=".$code."&grant_type=authorization_code";
+        $code = $request->get("code","");
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$this->appid."&secret=".$this->appsecret."&js_code=".$code."&grant_type=authorization_code";
         $curl = Kernel::curl();
         $curl->ssl = true;
         $curl_result = json_decode($curl->get($url));
         if(isset($curl_result->openid)){
-            $model = Member::whereRaw("openid = ? and status = 1 and delete_time != 0", [$curl_result->openid])->first();
+            $model = Member::whereRaw("openid = ? and status = 1 and delete_time = 0", [$curl_result->openid])->first();
             if($model){
                 $userInfo = Member::login($model);
                 config(["webconfig.userInfo" => $userInfo]);
@@ -56,7 +56,7 @@ class WechatController extends Controller
         DB::beginTransaction();
         try {
             $this->validate($request, ["username" => "required", "password" => "required", "openid" => "required"], [], ["username" => "用户名", "password" => "密码", "openid" => "微信唯一码"]);
-            $userInfo = Member::loginByOpenid($request->get("openid"));
+            $userInfo = Member::loginByPassword($request);
             Member::updateForData($userInfo["uid"], ["openid" => $request->get("openid", "")]);
             config(["webconfig.userInfo" => $userInfo]);
             list($token, $exp) = Kernel::token()->create($userInfo);

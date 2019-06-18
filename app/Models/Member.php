@@ -52,7 +52,7 @@ class Member extends Model
     {
         $username = $request->get("username", "");
         $password = $request->get("password", "");
-        $model = self::whereRaw("username = ? and status = 1", [$username])->first();
+        $model = self::whereRaw("username = ? and status = 1 and delete_time = 0", [$username])->first();
         if ($model) {
             list($password, $code) = Encrypt::start($password, $model->code);
             if ($model->password == $password) {
@@ -61,20 +61,6 @@ class Member extends Model
                 throw new HttpResponseException(Response::fail(Constant::SYSTEM_LOGIN_PASSWORD_FAIL_CODE . " - " . Constant::SYSTEM_LOGIN_PASSWORD_FAIL_MESSAGE));
             }
         } else {
-            throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
-        }
-    }
-
-    public static function loginByOpenid($openid = "")
-    {
-        if($openid != ""){
-            $model = self::whereRaw("openid = ? and status = 1 and delete_time != 0", [$openid])->first();
-            if ($model) {
-                return self::login($model);
-            } else {
-                throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
-            }
-        }else{
             throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
         }
     }
