@@ -33,14 +33,16 @@ class DepartmentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(ListRequest $request){
-        list($condition, $params, $arr, $page, $size) = Department::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = Department::getParams($request,$size);
         list(,$treeArr) = Department::getTree();
         $orderRaw = "sort asc,id";
         $model = DB::table(DB::raw(Department::getTableName()))->selectRaw("id,pid,title,sort");
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;

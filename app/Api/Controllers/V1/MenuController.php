@@ -31,7 +31,8 @@ class MenuController extends Controller
      */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = Menu::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = Menu::getParams($request,$size);
         list(, $treeArr) = Menu::getTree();
 
         $orderRaw = "id desc";
@@ -39,11 +40,13 @@ class MenuController extends Controller
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
             $value["content"] = $treeArr[$value["pid"]]["text"];
+            $value["create_time"] = $this->toDate($value["create_time"]);
             $list[$key] = $value;
         }
         $arr['list'] = $list;

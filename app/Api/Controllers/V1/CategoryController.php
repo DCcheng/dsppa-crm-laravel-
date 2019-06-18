@@ -30,7 +30,8 @@ class CategoryController extends Controller
      */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = Category::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = Category::getParams($request,$size);
         list(, $treeArr) = Category::getTree();
 
         $orderRaw = "sort asc,id desc";
@@ -38,7 +39,8 @@ class CategoryController extends Controller
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
@@ -56,7 +58,7 @@ class CategoryController extends Controller
      */
     public function all(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = Category::getParams($request);
+        list($condition, $params, $arr) = Category::getParams($request);
         list(, $treeArr) = Category::getTree();
 
         $orderRaw = "sort asc,id desc";
@@ -64,7 +66,7 @@ class CategoryController extends Controller
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
+        $list = $model->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
             $value["content"] = $treeArr[$value["pid"]]["text"];

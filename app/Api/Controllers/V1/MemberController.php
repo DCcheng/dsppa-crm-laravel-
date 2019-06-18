@@ -37,7 +37,8 @@ class MemberController extends Controller
      */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = Member::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = Member::getParams($request,$size);
         $time = time();
         $orderRaw = "a.uid desc";
         $model = DB::table(DB::raw(Member::getTableName() . " as a"))->selectRaw("a.uid,a.truename,a.phone,a.attence_num,a.last_login_time,a.last_login_ip,b.title as department_name,d.title as role_name")
@@ -48,7 +49,8 @@ class MemberController extends Controller
             $model->whereRaw($condition, $params);
         }
 
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;

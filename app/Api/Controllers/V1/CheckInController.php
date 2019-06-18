@@ -35,7 +35,8 @@ class CheckInController extends Controller
      */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = CheckIn::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = CheckIn::getParams($request,$size);
 
         $orderRaw = "a.id asc";
         $model = DB::table(DB::raw(CheckIn::getTableName() . " as a"))->selectRaw("a.*,b.title as department_name,c.truename")
@@ -46,7 +47,8 @@ class CheckInController extends Controller
             $model->whereRaw($condition, $params);
         }
 
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $list[$key] = (array)$value;

@@ -37,14 +37,16 @@ class CustomFollowUpController extends Controller
     public function index(ListRequest $request)
     {
         $this->validate($request, ["custom_id" => "required|integer"], [], ["custom_id" => "客户ID"]);
-        list($condition, $params, $arr, $page, $size) = CustomFollowUpRecord::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = CustomFollowUpRecord::getParams($request,$size);
         $time = time();
         $orderRaw = "create_time desc";
         $model = DB::table(DB::raw(CustomFollowUpRecord::getTableName()))->selectRaw("*");
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;

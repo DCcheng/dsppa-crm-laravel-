@@ -38,7 +38,8 @@ class CustomController extends Controller
     public function index(ListRequest $request)
     {
         $this->validate($request, ['type' => 'required|string'], [], ["type" => "获取列表类型"]);
-        list($condition, $params, $arr, $page, $size) = Custom::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = Custom::getParams($request,$size);
         $field = $request->get("field", "desc");
         $order = $request->get("order", "id");
         if (in_array($field, ["follow_up_time", "create_time", "id"]) && in_array($order, ["desc", "asc"])) {
@@ -53,7 +54,8 @@ class CustomController extends Controller
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->groupBy(DB::raw("a.id"))->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;

@@ -32,14 +32,16 @@ class TrainingFileController extends Controller
      */
     public function index(ListRequest $request)
     {
-        list($condition, $params, $arr, $page, $size) = TrainingFile::getParams($request);
+        $size = $request->get("size", config("webconfig.listSize"));
+        list($condition, $params, $arr, $page, $size) = TrainingFile::getParams($request, $size);
 
         $orderRaw = "id desc";
         $model = DB::table(DB::raw(TrainingFile::getTableName()))->selectRaw("*");
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
-        list($arr['pageList'], $arr['totalPage']) = Pager::create($model->count(), $size);
+        $arr["total"] = $model->count();
+        list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
             $value = (array)$value;
@@ -136,15 +138,16 @@ class TrainingFileController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         $this->validate($request, ['id' => 'required|integer'], [], ["id" => "培训资料ID"]);
-        $model = TrainingFile::where("delete_time",0)->find($request->get("id"));
-        if($model){
+        $model = TrainingFile::where("delete_time", 0)->find($request->get("id"));
+        if ($model) {
             $data = (array)$model["attributes"];
             $data["create_time"] = $this->toDate($data["create_time"]);
-            return Response::success(["data"=>$data]);
-        }else{
-            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE." - ".Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
+            return Response::success(["data" => $data]);
+        } else {
+            return Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE);
         }
     }
 }
