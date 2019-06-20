@@ -51,7 +51,9 @@ class CheckInController extends Controller
         list($arr['pageList'], $arr['totalPage']) = Pager::create($arr["total"], $size);
         $list = $model->forPage($page, $size)->orderByRaw($orderRaw)->get();
         foreach ($list as $key => $value) {
-            $list[$key] = (array)$value;
+            $value = (array)$value;
+            $value["create_time"] = $this->toDate($value["create_time"]);
+            $list[$key] = $value;
         }
         $arr['list'] = $list;
         return Response::success(["data" => $arr]);

@@ -17,6 +17,7 @@ use App\Api\Requests\ListRequest;
 use App\Api\Utils\Constant;
 use App\Api\Utils\Pager;
 use App\Api\Utils\Response;
+use App\Models\Member;
 use App\Models\Uploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,8 +36,9 @@ class TrainingFileController extends Controller
         $size = $request->get("size", config("webconfig.listSize"));
         list($condition, $params, $arr, $page, $size) = TrainingFile::getParams($request, $size);
 
-        $orderRaw = "id desc";
-        $model = DB::table(DB::raw(TrainingFile::getTableName()))->selectRaw("*");
+        $orderRaw = "a.id desc";
+        $model = DB::table(DB::raw(TrainingFile::getTableName()." as a"))->selectRaw("a.*,b.truename,b.avatar")
+            ->join(DB::raw(Member::getTableName()." as b"),DB::raw("b.uid"),"=",DB::raw("a.uid"));
         if ($condition != "") {
             $model->whereRaw($condition, $params);
         }
@@ -66,6 +68,7 @@ class TrainingFileController extends Controller
             $uploadInfo->status = 1;
             $uploadInfo->save();
             $data = [
+                "uid" => $uploadInfo->uid,
                 "upload_id" => $file_id,
                 "cid" => $request->get("cid"),
                 "type" => $uploadInfo->type,
@@ -104,6 +107,7 @@ class TrainingFileController extends Controller
             }
             $oldUploadFileID = $model->upload_id;
             $model["attributes"] = [
+                "uid" => $uploadInfo->uid,
                 "upload_id" => $file_id,
                 "cid" => $request->get("cid"),
                 "type" => $uploadInfo->type,

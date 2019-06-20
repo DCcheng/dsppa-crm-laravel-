@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  *  FileName: TrainingFile.php
  *  Description :
@@ -29,12 +29,24 @@ class TrainingFile extends Model
     public static function getParams(ListRequest $request,$size = 15)
     {
         list(, $params, $arr, $page, $size) = parent::getParams($request,$size);
-        $condition = [];
+        $condition = ["a.delete_time = 0"];
 
         $keyword = $request->get('keyword', "");
         if ($keyword != "") {
             $condition[] = "(a.name like ?)";
             $params[] = "%".trim($keyword) . "%";
+        }
+
+        $cid = $request->get('cid', "");
+        if ($cid != "") {
+            $condition[] = "a.cid = ?";
+            $params[] = $cid;
+        }
+
+        $type = $request->get('type', "all");
+        if ($type != "all") {
+            $condition[] = "a.type = ?";
+            $params[] = $type;
         }
 
         $condition = implode(" and ", $condition);

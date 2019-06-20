@@ -112,6 +112,9 @@ class Category extends Model
                 case "custom_followup": //客户跟进分类
                     $condition[] = "pid = ".Constant::CATEGORY_FOR_CUSTOM_FOLLOWUP;
                     break;
+                case "training_file": //知识库分类
+                    $condition[] = "pid = ".Constant::CATEGORY_FOR_TRAINING_FILE;
+                    break;
                 default:
                     throw new HttpResponseException(Response::fail(Constant::SYSTEM_DATA_EXCEPTION_CODE . " - " . Constant::SYSTEM_DATA_EXCEPTION_MESSAGE));
                     break;

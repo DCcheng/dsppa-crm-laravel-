@@ -20,8 +20,9 @@ use Exception;
 class Uploads extends Model
 {
     protected $table = "uploads";
+
     //上传文件
-    public static function uploadFile(Request $request,$field = "file", $convert = true)
+    public static function uploadFile(Request $request, $field = "file", $convert = true)
     {
         if ($request->isMethod('POST')) {
 
@@ -50,27 +51,29 @@ class Uploads extends Model
                 if ($bool) {
                     throw new Exception("上传文件格式错误");
                 }
-                $path = "uploads/".$type."/".date('Ymd');
+                $path = "uploads/" . $type . "/" . date('Ymd');
                 $filename = $fileCharater->store($path);
 
+                $userInfo = config("webconfig.userInfo");
                 //新增上传文件记录
                 $model = self::addForData([
-                    "name"=>$name,
-                    "filename"=>$filename,
-                    "convername"=>$type == "document"?explode(".", $filename)[0] . ".pdf":"",
-                    "type"=>$type,
-                    "size"=>sprintf("%.1f", $size / 1048576),
-                    "status"=>0,
-                    "create_time"=>time()
+                    "uid" => $userInfo["uid"],
+                    "name" => $name,
+                    "filename" => $filename,
+                    "convername" => $type == "document" ? explode(".", $filename)[0] . ".pdf" : $filename,
+                    "type" => $type,
+                    "size" => sprintf("%.1f", $size / 1048576),
+                    "status" => 0,
+                    "create_time" => time()
                 ]);
                 if ($type == "document" && $ext != "pdf" && $convert) {
                     exec("PATH=/usr/bin unoconv -f pdf " . $path . $model->filename . " > /dev/null &2>1&");
                 }
                 return [$model->id, $model->filename];
-            }else{
-                throw new Exception(Constant::SYSTEM_DATA_LACK_CODE." - ".Constant::SYSTEM_DATA_LACK_MESSAGE);
+            } else {
+                throw new Exception(Constant::SYSTEM_DATA_LACK_CODE . " - " . Constant::SYSTEM_DATA_LACK_MESSAGE);
             }
-        }else{
+        } else {
             throw new Exception("请求方法有误");
         }
     }
@@ -78,7 +81,7 @@ class Uploads extends Model
     //使用文件
     public static function useFile($id)
     {
-        self::updateForData($id,["status"=>1]);
+        self::updateForData($id, ["status" => 1]);
     }
 
     //清理文件
@@ -91,7 +94,7 @@ class Uploads extends Model
             $fileArr[] = $value->convername;
         }
         if (!self::whereRaw($condition)->update(["status" => -1])) {
-            throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_CODE." - ".Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE);
+            throw new Exception(Constant::SYSTEM_DATA_ACTION_FAIL_CODE . " - " . Constant::SYSTEM_DATA_ACTION_FAIL_MESSAGE);
         }
         Storage::delete($fileArr);
     }

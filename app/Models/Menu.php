@@ -75,10 +75,22 @@ class Menu extends Model
         list(, $params, $arr, $page, $size) = parent::getParams($request, $size);
         $condition = array("delete_time = 0", "id > 100");
 
-        $type = $request->get("type", "");
-        if ($type != "") {
+        $keyword = $request->get('keyword', "");
+        if ($keyword != "") {
+            $condition[] = "title like ?";
+            $params[] = "%" . trim($keyword) . "%";
+        }
+
+        $type = $request->get("type", "all");
+        if ($type != "all") {
             $condition[] = "type = ?";
             $params[] = $type;
+        }
+
+        $pid = $request->get("pid", "all");
+        if ($pid != "all") {
+            $condition[] = "pid = ?";
+            $params[] = $pid;
         }
 
         $condition = implode(" and ", $condition);
