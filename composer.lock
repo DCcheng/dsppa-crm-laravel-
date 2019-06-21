@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/DCcheng/kernel.git",
-                "reference": "8dbfa8c49fcfc780b962a37e063b67420fb92d63"
+                "reference": "2d44e66850add1d5d1d4f4850dcf3daba9954a52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DCcheng/kernel/zipball/8dbfa8c49fcfc780b962a37e063b67420fb92d63",
-                "reference": "8dbfa8c49fcfc780b962a37e063b67420fb92d63",
+                "url": "https://api.github.com/repos/DCcheng/kernel/zipball/2d44e66850add1d5d1d4f4850dcf3daba9954a52",
+                "reference": "2d44e66850add1d5d1d4f4850dcf3daba9954a52",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
                     "email": "cdc87296750@gmail.com"
                 }
             ],
-            "time": "2019-06-12T07:15:42+00:00"
+            "time": "2019-06-21T07:00:49+00:00"
         },
         {
             "name": "dingo/api",

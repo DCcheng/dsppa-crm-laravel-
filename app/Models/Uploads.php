@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Kernel\Kernel;
 
 class Uploads extends Model
 {
@@ -67,7 +68,9 @@ class Uploads extends Model
                     "create_time" => time()
                 ]);
                 if ($type == "document" && $ext != "pdf" && $convert) {
-                    exec("PATH=/usr/bin unoconv -f pdf " . $path . $model->filename . " > /dev/null &2>1&");
+                    $path = storage_path("app");
+                    Kernel::pdf()->execute($path."/".$model->filename,$path."/".$model->convername);
+//                    exec("PATH=/usr/bin unoconv -f pdf " . $path . $model->filename . " > /dev/null &2>1&");
                 }
                 return [$model->id, $model->filename];
             } else {

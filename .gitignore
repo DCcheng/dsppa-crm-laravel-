@@ -7,5 +7,6 @@
 /tests
 Homestead.json
 Homestead.yaml
+/vendor
 .env
 .env.example
